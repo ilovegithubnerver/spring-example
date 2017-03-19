@@ -1,6 +1,6 @@
 # Spring杂谈
 
-[Spring-Web](spring-example-web)（纯注释HelloWorld）
+[Spring-Web](spring-example-web)（HelloWorld）
 
 - WebApplicationInitializer
 - RestController

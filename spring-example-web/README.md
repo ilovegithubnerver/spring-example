@@ -1,4 +1,4 @@
-# Spring-Web（纯注释HelloWorld）
+# Spring-Web（HelloWorld）
 
 #### *WebApplicationInitializer 接口*
 
