@@ -3,7 +3,6 @@
 [Spring-Web](spring-example-web)（HelloWorld）
 
 - WebApplicationInitializer
-- RestController
 
 [Spring-BeanScope](spring-example-bean-scope)（Bean作用域）
 
