@@ -1,4 +1,4 @@
-# Spring-BeanScope（Bean作用域）
+# Spring - Bean Scope 作用域
 
 #### *singleton*
 
