@@ -87,3 +87,5 @@ public void doAction2() {
 ```
 
 为实现部分提交，`doAction()`内部又开启了新的事务，为保证不影响原事务，传播行为设置成`PROPAGATION_REQUIRED`。即使`doAction2()`发生异常进行回滚，也不影响`doAction()`的提交。
+
+*PS：本文使用的是spring-4.3.7.RELEASE*

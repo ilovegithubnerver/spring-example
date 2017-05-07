@@ -116,3 +116,5 @@ second time request is :com.example.model.RequestObj@5332078a
 first  time session is :com.example.model.SessionObj@2f1de87b
 second time session is :com.example.model.SessionObj@2f1de87b
 ```
+
+*PS：本文使用的是spring-4.3.7.RELEASE*
