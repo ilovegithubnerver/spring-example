@@ -22,7 +22,7 @@ public class SingleTransactionTest {
     private DataSourceTransactionManager transactionManager;
 
     @Test
-    public void test() {
+    public void transaction() {
         // 定义事务类型
         DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
         // 如果当前没有事务，就新建一个事务，

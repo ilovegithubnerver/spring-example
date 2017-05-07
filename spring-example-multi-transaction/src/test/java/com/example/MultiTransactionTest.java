@@ -22,12 +22,11 @@ public class MultiTransactionTest {
     private DataSourceTransactionManager transactionManager;
 
     @Test
-    public void test() {
+    public void transaction() {
         DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
         TransactionStatus transaction = transactionManager.getTransaction(transactionDefinition);
         try {
             doAction();
-            doAction2();
             transactionManager.commit(transaction);
         } catch (Exception e) {
             transactionManager.rollback(transaction);
@@ -37,6 +36,7 @@ public class MultiTransactionTest {
 
     public void doAction() {
         jdbcTemplate.execute("insert into user(account,password) value('lily','123456')");
+        doAction2();
     }
 
     public void doAction2() {
