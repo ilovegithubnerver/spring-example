@@ -6,8 +6,8 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        if (RoutingDataSourceType.WRITE.equals(RoutingDataSourceHolder.get()))
-            return RoutingDataSourceType.WRITE;
-        return RoutingDataSourceType.READ;
+        if (RoutingDataSourceType.READ.equals(RoutingDataSourceHolder.get()))
+            return RoutingDataSourceType.READ;
+        return RoutingDataSourceType.WRITE;
     }
 }
