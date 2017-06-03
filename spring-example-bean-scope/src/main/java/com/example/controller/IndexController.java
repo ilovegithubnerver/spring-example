@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.quartz;
 
 import com.example.model.PrototypeObj;
 import com.example.model.RequestObj;
