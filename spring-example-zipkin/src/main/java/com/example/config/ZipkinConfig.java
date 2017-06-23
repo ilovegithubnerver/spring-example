@@ -1,5 +1,6 @@
 package com.example.config;
 
+import brave.Tracer;
 import brave.Tracing;
 import brave.context.log4j12.MDCCurrentTraceContext;
 import brave.http.HttpTracing;
@@ -34,6 +35,11 @@ public class ZipkinConfig {
                 .localServiceName("spring-example-zipkin")
                 .currentTraceContext(MDCCurrentTraceContext.create())
                 .reporter(reporter).build();
+    }
+
+    @Bean
+    public Tracer tracer(Tracing tracing) {
+        return tracing.tracer();
     }
 
     @Bean
