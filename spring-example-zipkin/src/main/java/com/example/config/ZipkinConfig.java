@@ -3,8 +3,13 @@ package com.example.config;
 import brave.Tracing;
 import brave.context.log4j2.ThreadContextCurrentTraceContext;
 import brave.http.HttpTracing;
+import brave.spring.web.TracingClientHttpRequestInterceptor;
+import brave.spring.webmvc.TracingHandlerInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.client.RestTemplate;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Reporter;
@@ -12,6 +17,7 @@ import zipkin.reporter.Sender;
 import zipkin.reporter.okhttp3.OkHttpSender;
 
 @Configuration
+@Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
 public class ZipkinConfig {
 
     @Bean
