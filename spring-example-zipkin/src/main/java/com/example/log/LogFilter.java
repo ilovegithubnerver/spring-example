@@ -18,7 +18,7 @@ public class LogFilter implements Filter {
 
     @Override
     public void destroy() {
-        LogHelper.cleanup();
+        LogHelper.clean();
     }
 
 }

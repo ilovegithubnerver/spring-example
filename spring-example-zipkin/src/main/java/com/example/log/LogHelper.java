@@ -7,10 +7,10 @@ import java.lang.management.ManagementFactory;
 public class LogHelper {
 
     public static void apply() {
-        MDC.put("PID", ManagementFactory.getRuntimeMXBean().getName());
+        MDC.put("PID", ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
     }
 
-    public static void cleanup() {
+    public static void clean() {
         MDC.remove("PID");
     }
 
