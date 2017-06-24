@@ -2,7 +2,6 @@ package com.example.controller;
 
 import brave.Span;
 import brave.Tracer;
-import brave.propagation.SamplingFlags;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
