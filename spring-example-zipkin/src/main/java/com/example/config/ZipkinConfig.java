@@ -38,13 +38,13 @@ public class ZipkinConfig {
     }
 
     @Bean
-    public Tracer tracer(Tracing tracing) {
-        return tracing.tracer();
+    public HttpTracing httpTracing(Tracing tracing) {
+        return HttpTracing.create(tracing);
     }
 
     @Bean
-    public HttpTracing httpTracing(Tracing tracing) {
-        return HttpTracing.create(tracing);
+    public Tracer tracer(Tracing tracing) {
+        return tracing.tracer();
     }
 
 }
