@@ -16,10 +16,14 @@ public class ApplicationContextHelper implements ApplicationContextAware {
     }
 
     public static Object getBean(String beanName) {
+        if (applicationContext == null || beanName == null)
+            return null;
         return applicationContext.getBean(beanName);
     }
 
     public static <T> T getBean(Class<T> beanType) {
+        if (applicationContext == null || beanType == null)
+            return null;
         return applicationContext.getBean(beanType);
     }
 
