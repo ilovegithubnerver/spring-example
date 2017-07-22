@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class HelloRestController {
+public class HelloController {
 
     private Logger logger = Logger.getLogger(this.getClass());
 
