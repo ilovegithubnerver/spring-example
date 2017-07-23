@@ -41,4 +41,8 @@ public class HelloRestController {
 }
 ```
 
+## Tomcat Maven Plugin
+
+官网：http://tomcat.apache.org/maven-plugin-2.2
+
 *PS：本文使用的是spring-4.3.7.RELEASE*
