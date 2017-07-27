@@ -6,7 +6,12 @@ import brave.context.log4j12.MDCCurrentTraceContext;
 import brave.http.HttpTracing;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.TracingHandlerInterceptor;
+import com.example.zipkin.RabbitSender;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -28,13 +33,22 @@ import zipkin.reporter.okhttp3.OkHttpSender;
 public class ZipkinConfig {
 
     @Bean
-    public Sender sender() {
+    public Sender httpSender() {
         return OkHttpSender.create("http://localhost:9411/api/v1/spans");
     }
 
     @Bean
-    public Reporter<Span> reporter(Sender sender) {
-        return AsyncReporter.builder(sender).build();
+    public Sender rabbitSender() {
+        String url = "127.0.0.1";
+        ConnectionFactory connectionFactory = new CachingConnectionFactory(url);
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setExchange("sleuth");
+        return new RabbitSender(rabbitTemplate);
+    }
+
+    @Bean
+    public Reporter<Span> reporter(@Qualifier("httpSender") Sender rabbitSender) {
+        return AsyncReporter.builder(rabbitSender).build();
     }
 
     @Bean
