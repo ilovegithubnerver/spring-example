@@ -14,7 +14,6 @@ import zipkin.reporter.Sender;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RabbitSender implements Sender {
@@ -55,20 +54,20 @@ public class RabbitSender implements Sender {
             List<Span> spans = decodeSpan(encodedSpans);
             Spans sleuthSpans = toSleuthSpans(spans);
             rabbitTemplate.convertAndSend(objectMapper.writeValueAsString(sleuthSpans));
+            callback.onComplete();
         } catch (Exception e) {
             e.printStackTrace();
+            callback.onError(e);
         }
     }
 
     @Override
     public CheckResult check() {
-        logger.info("rabbit sender check");
-        return null;
+        return CheckResult.OK;
     }
 
     @Override
     public void close() throws IOException {
-        logger.info("rabbit sender close");
     }
 
     private List<Span> decodeSpan(List<byte[]> encodedSpans) {
