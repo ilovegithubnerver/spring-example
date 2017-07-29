@@ -16,17 +16,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Reporter;
 import zipkin.reporter.Sender;
 import zipkin.reporter.okhttp3.OkHttpSender;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @Configuration
 @Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
@@ -89,6 +94,22 @@ public class ZipkinConfig {
                 response.getHeaders().add("Trace-Id", traceId);
             }
             return body;
+        }
+
+        @Order(0)
+        @ExceptionHandler
+        public void exceptionHandler(Exception e) throws Exception {
+            tracer.currentSpan().tag("exception", getStackTrace(e));
+            throw e;
+        }
+
+        private String getStackTrace(Throwable t) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw, true);
+            t.printStackTrace(pw);
+            pw.flush();
+            sw.flush();
+            return sw.toString();
         }
     }
 

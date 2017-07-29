@@ -44,4 +44,10 @@ public class HelloController {
         return "Hello, I am Fuck!";
     }
 
+    @RequestMapping("/hello5")
+    public String hello5() {
+        logger.info("Hello, I am ...!");
+        return "Hello, I am ...! ";
+    }
+
 }
