@@ -22,10 +22,20 @@ public class CacheTest {
     CacheAspect cacheAspect;
 
     @Test
-    public void test() {
+    public void testCache() {
         User user = userService.getUserById(1L);
         user = userService.getUserById(1L);
-        System.out.println(user);
+    }
+
+    @Test
+    public void testDeleteCache() {
+        userService.deleteUserById(1L);
+    }
+
+    @Test
+    public void testDeleteCache2() {
+        User user = new User(1L, "conanli", "123456");
+        userService.addUser(user);
     }
 
 }
