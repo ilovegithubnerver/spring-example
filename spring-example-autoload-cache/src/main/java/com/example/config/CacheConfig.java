@@ -1,5 +1,6 @@
 package com.example.config;
 
+import com.example.cache.CacheAspect;
 import com.jarvis.cache.CacheHandler;
 import com.jarvis.cache.ICacheManager;
 import com.jarvis.cache.aop.aspectj.AspectjAopInterceptor;
@@ -7,13 +8,15 @@ import com.jarvis.cache.redis.ShardedJedisCacheManager;
 import com.jarvis.cache.script.SpringELParser;
 import com.jarvis.cache.serializer.HessianSerializer;
 import com.jarvis.cache.to.AutoLoadConfig;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import redis.clients.jedis.ShardedJedisPool;
 
 import java.util.Collections;
 
+@ComponentScan(basePackages = {"com.example.service"})
+@EnableAspectJAutoProxy
 @Configuration
+@Import({CacheAspect.class})
 public class CacheConfig {
 
     @Bean
@@ -34,14 +37,14 @@ public class CacheConfig {
         return cacheManager;
     }
 
-    @Bean(initMethod="start", destroyMethod="destroy")
+    @Bean(destroyMethod="destroy")
     public CacheHandler cacheHandler(ICacheManager cacheManager) {
         SpringELParser scriptParser = new SpringELParser();
         CacheHandler cacheHandler = new CacheHandler(cacheManager, scriptParser);
         return cacheHandler;
     }
 
-    @Bean(destroyMethod="destroy")
+    @Bean
     public AspectjAopInterceptor cacheInterceptor(CacheHandler cacheHandler) {
         AspectjAopInterceptor cacheInterceptor = new AspectjAopInterceptor(cacheHandler);
         return cacheInterceptor;
