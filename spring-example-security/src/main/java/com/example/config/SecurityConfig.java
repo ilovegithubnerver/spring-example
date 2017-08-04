@@ -8,8 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -30,11 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.formLogin()
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
-                .loginProcessingUrl("/login")
+                // .successHandler(authenticationSuccessHandler)
+                // .failureHandler(authenticationFailureHandler)
+                // .loginProcessingUrl("/login")
                 .permitAll();
-        http.authorizeRequests().antMatchers("/*");
+        http.authorizeRequests().anyRequest().authenticated();
     }
 
     @Override
@@ -45,6 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new StandardPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
     }
 }
