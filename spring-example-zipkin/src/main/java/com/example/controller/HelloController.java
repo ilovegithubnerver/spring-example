@@ -22,7 +22,7 @@ public class HelloController {
     public String hello() {
         logger.info("Hello, I am Jack!");
         tracer.currentSpan().tag("hello", "jack");
-        String res = restTemplate.getForObject("http://localhost:8080/zipkin/hello2", String.class);
+        String res = restTemplate.getForObject("http://localhost:8080/hello2", String.class);
         return "Hello, I am Jack! " + res;
     }
 
@@ -30,7 +30,7 @@ public class HelloController {
     public String hello2() {
         logger.info("Hello, I am Lucy!");
         tracer.currentSpan().tag("hello2", "lucy");
-        String res = restTemplate.getForObject("http://localhost:8080/zipkin/hello3", String.class);
+        String res = restTemplate.getForObject("http://localhost:8080/hello3", String.class);
         return "Hello, I am Lucy! " + res;
     }
 
