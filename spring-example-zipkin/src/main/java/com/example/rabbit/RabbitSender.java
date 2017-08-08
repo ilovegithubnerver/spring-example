@@ -1,4 +1,4 @@
-package com.example.zipkin;
+package com.example.rabbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
@@ -80,11 +80,11 @@ public class RabbitSender implements Sender {
 
     private Spans toSleuthSpans(List<Span> spans) {
         Host host = new Host(null, "localhost", 8080);
-        List<com.example.zipkin.Span> spans2 = new ArrayList<>();
-        com.example.zipkin.Span span2 = null;
+        List<com.example.rabbit.Span> spans2 = new ArrayList<>();
+        com.example.rabbit.Span span2 = null;
         for (Span span : spans) {
 
-            com.example.zipkin.Span.SpanBuilder spanBuilder = com.example.zipkin.Span.builder()
+            com.example.rabbit.Span.SpanBuilder spanBuilder = com.example.rabbit.Span.builder()
                     .begin(span.timestamp != null ? span.timestamp / 1000 : 0)
                     .end(span.timestamp != null && span.duration != null ? (span.timestamp + span.duration) / 1000 : 0)
                     .name(span.name)
@@ -99,7 +99,7 @@ public class RabbitSender implements Sender {
                 if (host.getServiceName() == null && annotation.endpoint.serviceName != null) {
                     host.setServiceName(annotation.endpoint.serviceName);
                 }
-                spanBuilder.log(new com.example.zipkin.Log(annotation.timestamp / 1000, annotation.value));
+                spanBuilder.log(new com.example.rabbit.Log(annotation.timestamp / 1000, annotation.value));
             }
             for (BinaryAnnotation binaryAnnotation : span.binaryAnnotations) {
                 if ("ca".equals(binaryAnnotation.key))

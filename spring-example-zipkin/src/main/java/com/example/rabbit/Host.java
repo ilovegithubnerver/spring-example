@@ -1,4 +1,4 @@
-package com.example.zipkin;
+package com.example.rabbit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
