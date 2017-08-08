@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>spring-example</artifactId>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>spring-example-aop</module>
+        <module>spring-example-async</module>
+        <module>spring-example-autoload-cache</module>
+        <module>spring-example-bean-scope</module>
+        <module>spring-example-multi-transaction</module>
+        <module>spring-example-quartz</module>
+        <module>spring-example-routing-datasource</module>
+        <module>spring-example-security</module>
+        <module>spring-example-web</module>
+        <module>spring-example-zipkin</module>
+    </modules>
+
+</project>
