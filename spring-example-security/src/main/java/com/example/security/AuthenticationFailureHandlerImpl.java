@@ -20,8 +20,8 @@ public class AuthenticationFailureHandlerImpl extends SimpleUrlAuthenticationFai
     }
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         System.out.println("login failure");
-        super.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
+        super.onAuthenticationFailure(request, response, e);
     }
 }

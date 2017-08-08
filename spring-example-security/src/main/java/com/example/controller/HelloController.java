@@ -11,4 +11,14 @@ public class HelloController {
         return "Hello World!!!";
     }
 
+    @RequestMapping("/user")
+    public String user() {
+        return "Any User Information";
+    }
+
+    @RequestMapping("/role")
+    public String role() {
+        return "Any Role Information";
+    }
+
 }

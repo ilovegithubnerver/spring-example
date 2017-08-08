@@ -34,7 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .failureHandler(authenticationFailureHandler)
                 // .loginProcessingUrl("/login")
                 .permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests()
+                .antMatchers("/hello").anonymous()
+                .antMatchers("/role/**").hasRole("ROLE")
+                .anyRequest().authenticated();
     }
 
     @Override

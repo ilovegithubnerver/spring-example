@@ -12,8 +12,8 @@ import java.io.IOException;
 @Component
 public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler {
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException, ServletException {
         System.out.println("login success");
-        super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
+        super.onAuthenticationSuccess(request, response, auth);
     }
 }
