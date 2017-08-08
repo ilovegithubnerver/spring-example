@@ -17,6 +17,8 @@ AOP类型：
 
 动态代理的核心是InvocationHandler接口和Proxy类。
 
+Proxy生成一个与目标类实现相同接口的实现类，实现所有方法，内容为调用InvocationHandler的invoke方法，由invoke执行目标方法。
+
 #### CGLib 动态代理
 
 如果目标类没有实现接口，那么Spring AOP会选择使用CGLib来动态代理目标类。
