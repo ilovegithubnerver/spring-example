@@ -1,10 +1,6 @@
 package com.example;
 
-import com.example.aop.AOPProxyConfig;
-import com.example.aop.FilteredAdvisor;
-import com.example.aop.User;
-import com.example.aop.UserAroundAdvice;
-import com.example.cglib.English;
+import com.example.aop.*;
 import org.aopalliance.aop.Advice;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,28 +18,13 @@ public class AOPProxyTest {
     User user;
 
     @Test
-    public void testBefore() {
-        user.sayHello("conan", "li");
+    public void test() {
+        System.out.println(user.sayHello("conan", "li"));
     }
 
     @Test
-    public void testAfter() {
-        user.sayHello2("conan", "li");
-    }
-
-    @Test
-    public void testAfterReturning() {
-        user.sayHello3("conan", "li");
-    }
-
-    @Test
-    public void testAfterThrowing() {
-        user.sayHello4("conan", "li");
-    }
-
-    @Test
-    public void testAround() {
-        user.sayHello5("conan", "li");
+    public void testException() {
+        System.out.println(user.sayHello(null, null));
     }
 
     @Test
@@ -81,6 +62,6 @@ public class AOPProxyTest {
 
         User proxy = (User) proxyFactory.getObject();// 生成代理类
         proxy.sayHello("conan", "li");// 有输出补充的内容
-        proxy.sayHello2("conan", "li");// 不输出补充的内容
+        proxy.hi();// 不输出补充的内容
     }
 }
