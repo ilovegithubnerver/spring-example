@@ -25,4 +25,8 @@ Proxy生成一个与目标类实现相同接口的实现类，实现所有方法
 
 CGLib是通过继承的方式做的动态代理，如果某个类被标记为final，它是无法使用CGLib做动态代理的。
 
+#### ProxyFactoryBean
+
+proxy --> ProxyFactoryBean --> JdkDynamicAopProxy/CglibAopProxy --> Advice --> target 
+
 *PS：本文使用的是spring-4.3.7.RELEASE，aspectj-1.8.9*
