@@ -2,6 +2,7 @@ package com.example;
 
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.TracingHandlerInterceptor;
+import com.example.log.TracingLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +25,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private TracingClientHttpRequestInterceptor tracingClientHttpRequestInterceptor;
     @Autowired
     private TracingHandlerInterceptor tracingHandlerInterceptor;
+    @Autowired
+    private TracingLoggingInterceptor tracingLoggingInterceptor;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -37,6 +40,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tracingHandlerInterceptor);
+        registry.addInterceptor(tracingLoggingInterceptor);
         super.addInterceptors(registry);
     }
 }

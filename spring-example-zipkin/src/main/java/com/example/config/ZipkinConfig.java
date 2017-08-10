@@ -43,7 +43,7 @@ public class ZipkinConfig {
 
     @Bean
     public Sender httpSender() {
-        return OkHttpSender.create("http://localhost:9411/api/v1/spans");
+        return OkHttpSender.create("http://192.168.199.12:9966/api/v1/spans");
     }
 
     // @Bean
@@ -93,7 +93,7 @@ public class ZipkinConfig {
             brave.Span currentSpan = tracer.currentSpan();
             if (currentSpan != null && currentSpan.context().parentId() == null) {
                 String traceId = currentSpan.context().traceIdString();
-                response.getHeaders().add("Trace-Id", traceId);
+                // response.getHeaders().add("Trace-Id", traceId);
             }
             return body;
         }
@@ -109,7 +109,7 @@ public class ZipkinConfig {
 
                 if (currentSpan.context().parentId() == null) {
                     String traceId = currentSpan.context().traceIdString();
-                    response.addHeader("Trace-Id", traceId);
+                    // response.addHeader("Trace-Id", traceId);
                 }
             }
             throw e;
