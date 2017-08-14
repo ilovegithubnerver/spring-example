@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class XmlBeanTest {
@@ -29,6 +31,13 @@ public class XmlBeanTest {
         ClassPathResource resource = new ClassPathResource("spring.xml");
         XmlBeanFactory factory = new XmlBeanFactory(resource);
 
+        Chinese chinese = factory.getBean(Chinese.class);
+        chinese.sayHello("conanli");
+    }
+
+    @Test
+    public void testApplicationContext() {
+        ApplicationContext factory = new ClassPathXmlApplicationContext("spring.xml");
         Chinese chinese = factory.getBean(Chinese.class);
         chinese.sayHello("conanli");
     }
