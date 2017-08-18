@@ -7,6 +7,8 @@ import brave.http.HttpTracing;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.TracingHandlerInterceptor;
 import com.example.rabbit.RabbitSender;
+import com.example.tracing.TracingExceptionHandler;
+import com.example.tracing.TracingLoggingInterceptor;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -38,12 +40,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @Configuration
-@Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class})
+@Import({TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class, TracingLoggingInterceptor.class, TracingExceptionHandler.class})
 public class ZipkinConfig {
 
     @Bean
     public Sender httpSender() {
-        return OkHttpSender.create("http://192.168.199.12:9966/api/v1/spans");
+        return OkHttpSender.create("http://localhost:9411/api/v1/spans");
     }
 
     // @Bean
@@ -77,52 +79,4 @@ public class ZipkinConfig {
     public Tracer tracer(Tracing tracing) {
         return tracing.tracer();
     }
-
-    @ControllerAdvice
-    public static class TraceContextAdvice implements ResponseBodyAdvice<Object> {
-        @Autowired
-        Tracer tracer;
-
-        @Override
-        public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-            return true;
-        }
-
-        @Override
-        public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-            brave.Span currentSpan = tracer.currentSpan();
-            if (currentSpan != null && currentSpan.context().parentId() == null) {
-                String traceId = currentSpan.context().traceIdString();
-                // response.getHeaders().add("Trace-Id", traceId);
-            }
-            return body;
-        }
-
-        @Order(0)
-        @ExceptionHandler
-        public void exceptionHandler(Exception e, HttpServletResponse response) throws Exception {
-            brave.Span currentSpan = tracer.currentSpan();
-            if (currentSpan != null) {
-                currentSpan.tag(TraceKeys.HTTP_STATUS_CODE, String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-                currentSpan.tag(Constants.ERROR, e.getMessage());
-                currentSpan.tag("exception", getStackTrace(e));
-
-                if (currentSpan.context().parentId() == null) {
-                    String traceId = currentSpan.context().traceIdString();
-                    // response.addHeader("Trace-Id", traceId);
-                }
-            }
-            throw e;
-        }
-
-        private String getStackTrace(Throwable t) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw, true);
-            t.printStackTrace(pw);
-            pw.flush();
-            sw.flush();
-            return sw.toString();
-        }
-    }
-
 }

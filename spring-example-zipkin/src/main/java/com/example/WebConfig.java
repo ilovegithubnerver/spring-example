@@ -2,7 +2,7 @@ package com.example;
 
 import brave.spring.web.TracingClientHttpRequestInterceptor;
 import brave.spring.webmvc.TracingHandlerInterceptor;
-import com.example.log.TracingLoggingInterceptor;
+import com.example.tracing.TracingLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

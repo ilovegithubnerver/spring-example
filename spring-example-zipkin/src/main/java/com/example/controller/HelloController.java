@@ -52,7 +52,8 @@ public class HelloController {
 
     @RequestMapping("/hello6")
     public String hello6() {
-        throw new NullPointerException();
+        logger.info("some error");
+        throw new NullPointerException("Hell...");
     }
 
 }
