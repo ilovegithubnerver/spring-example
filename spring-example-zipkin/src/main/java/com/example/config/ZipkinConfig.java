@@ -23,7 +23,7 @@ public class ZipkinConfig {
 
     @Bean
     public Sender sender() {
-        return OkHttpSender.create("http://localhost:9411/api/v1/spans");
+        return OkHttpSender.create("http://192.168.199.12:9966/api/v1/spans");
     }
 
     @Bean
