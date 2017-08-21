@@ -3,14 +3,17 @@ package com.example.tracing;
 import brave.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import zipkin.Constants;
 import zipkin.TraceKeys;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 @ControllerAdvice
 public class TracingExceptionHandler {
@@ -19,12 +22,20 @@ public class TracingExceptionHandler {
     private Tracer tracer;
 
     @ExceptionHandler
-    public void exceptionHandler(Exception e, HttpServletResponse response) throws Exception {
+    public void exceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
         brave.Span currentSpan = tracer.currentSpan();
         if (currentSpan != null) {
             currentSpan.tag(TraceKeys.HTTP_STATUS_CODE, String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
             currentSpan.tag(Constants.ERROR, e.getMessage());
             currentSpan.tag("exception", getStackTrace(e));
+
+            String requestBody = StreamUtils.copyToString(request.getInputStream(), Charset.defaultCharset());
+            if (requestBody != null && requestBody.trim().length() > 0)
+                currentSpan.tag("http.request_body", requestBody);
+
+            String queryParams = request.getQueryString();
+            if (queryParams != null && queryParams.trim().length() > 0)
+                currentSpan.tag("http.query_params", queryParams);
         }
         throw e;
     }

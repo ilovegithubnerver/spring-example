@@ -1,57 +1,46 @@
 package com.example;
 
-
 import org.springframework.util.StreamUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
+import javax.servlet.FilterChain;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-@WebFilter(urlPatterns = "/*")
-public class MyFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+public class MyFilter extends OncePerRequestFilter {
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        ServletRequest requestWrapper = new HttpServletRequestWrapper(servletRequest);
-
-        filterChain.doFilter(new ReadableHttpServletRequestWrapper(servletRequest), servletResponse);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (!(request instanceof RereadableHttpServletRequestWrapper))
+            request = new RereadableHttpServletRequestWrapper(request);
+        filterChain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {
-    }
+    public static class RereadableHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-    public static class ReadableHttpServletRequestWrapper extends HttpServletRequestWrapper {
+        private byte[] body = new byte[0];
+        private ByteArrayInputStream byteArrayInputStream = null;
+        private ServletInputStream servletInputStream = null;
+        private BufferedReader bufferedReader = null;
 
-        private byte[] body;
-
-        public ReadableHttpServletRequestWrapper(HttpServletRequest request) {
+        public RereadableHttpServletRequestWrapper(HttpServletRequest request) {
             super(request);
             try {
-                body = StreamUtils.copyToByteArray(request.getInputStream());
+                if (request.getInputStream() != null)
+                    body = StreamUtils.copyToByteArray(request.getInputStream());
             } catch (IOException e) {
-                body = new byte[0];
+                e.printStackTrace();
             }
-        }
-
-        @Override
-        public ServletInputStream getInputStream() throws IOException {
-            return new ServletInputStream() {
-                ByteArrayInputStream bais = new ByteArrayInputStream(body);
-
-                @Override
-                public int read() throws IOException {
-                    return bais.read();
-                }
-
+            byteArrayInputStream = new ByteArrayInputStream(body);
+            servletInputStream = new ServletInputStream() {
                 @Override
                 public boolean isFinished() {
                     return false;
@@ -59,14 +48,31 @@ public class MyFilter implements Filter {
 
                 @Override
                 public boolean isReady() {
-                    return false;
+                    return true;
                 }
 
                 @Override
                 public void setReadListener(ReadListener readListener) {
+                }
 
+                @Override
+                public int read() throws IOException {
+                    return byteArrayInputStream.read();
                 }
             };
+            bufferedReader = new BufferedReader(new InputStreamReader(servletInputStream));
+        }
+
+        @Override
+        public ServletInputStream getInputStream() throws IOException {
+            byteArrayInputStream.reset();
+            return servletInputStream;
+        }
+
+        @Override
+        public BufferedReader getReader() throws IOException {
+            byteArrayInputStream.reset();
+            return bufferedReader;
         }
     }
 }

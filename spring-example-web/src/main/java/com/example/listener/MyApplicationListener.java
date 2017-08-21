@@ -1,4 +1,4 @@
-package com.example.log;
+package com.example.listener;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
@@ -11,7 +11,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LogApplicationListener implements GenericApplicationListener {
+public class MyApplicationListener implements GenericApplicationListener {
 
     private static final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 20;
     private static Class<?>[] EVENT_TYPES = {ContextStartedEvent.class, ContextStoppedEvent.class, ContextClosedEvent.class};
@@ -30,9 +30,9 @@ public class LogApplicationListener implements GenericApplicationListener {
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof ContextStartedEvent) {
-            LogHelper.apply();
+            System.out.println("starting...");
         } else if (applicationEvent instanceof ContextStoppedEvent || applicationEvent instanceof ContextClosedEvent) {
-            LogHelper.clean();
+            System.out.println("stopping...");
         }
 
     }

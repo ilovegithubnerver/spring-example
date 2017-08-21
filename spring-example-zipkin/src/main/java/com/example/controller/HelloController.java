@@ -2,8 +2,10 @@ package com.example.controller;
 
 import brave.Span;
 import brave.Tracer;
+import com.example.model.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -51,8 +53,14 @@ public class HelloController {
     }
 
     @RequestMapping("/hello6")
-    public String hello6() {
-        logger.info("some error");
+    public String hello6(String name) {
+        logger.info("some error " + name);
+        throw new NullPointerException("Hell...");
+    }
+
+    @RequestMapping("/hello7")
+    public String hello7(@RequestBody User params) {
+        logger.info("some error " + params.getName());
         throw new NullPointerException("Hell...");
     }
 
