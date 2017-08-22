@@ -3,9 +3,9 @@ package com.example.tracing;
 import brave.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import zipkin.Constants;
 import zipkin.TraceKeys;
 
@@ -29,7 +29,7 @@ public class TracingExceptionHandler {
             currentSpan.tag(Constants.ERROR, e.getMessage());
             currentSpan.tag("exception", getStackTrace(e));
 
-            String requestBody = StreamUtils.copyToString(request.getInputStream(), Charset.defaultCharset());
+            String requestBody = getRequestBody(request);
             if (requestBody != null && requestBody.trim().length() > 0)
                 currentSpan.tag("http.request_body", requestBody);
 
@@ -38,6 +38,15 @@ public class TracingExceptionHandler {
                 currentSpan.tag("http.query_params", queryParams);
         }
         throw e;
+    }
+
+    private String getRequestBody(HttpServletRequest request) {
+        if (request instanceof ContentCachingRequestWrapper) {
+            byte[] body = ((ContentCachingRequestWrapper) request).getContentAsByteArray();
+            if (body.length > 0)
+                return new String(body, Charset.defaultCharset());
+        }
+        return null;
     }
 
     private String getStackTrace(Throwable t) {
