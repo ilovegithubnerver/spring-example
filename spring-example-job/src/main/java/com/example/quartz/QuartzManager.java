@@ -1,7 +1,10 @@
 package com.example.quartz;
 
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class QuartzManager {
@@ -616,6 +619,28 @@ public class QuartzManager {
         } catch (SchedulerException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * 获取所有Job
+     *
+     * @return
+     */
+    public List<JobDetail> listJob() {
+        try {
+            List<JobDetail> jobs = new ArrayList<>();
+            for (String jobGroup : scheduler.getJobGroupNames()) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroup))) {
+                    JobDetail job = scheduler.getJobDetail(jobKey);
+                    if (job != null)
+                        jobs.add(job);
+                }
+            }
+            return jobs;
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
