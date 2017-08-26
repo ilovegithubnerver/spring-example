@@ -13,8 +13,8 @@ import java.util.Date;
 public class MyJob extends LoggedJob {
 
     @Override
-    public void executeJob(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        JobDetail jobDetail = jobExecutionContext.getJobDetail();
+    public void executeJob(JobExecutionContext context) throws JobExecutionException {
+        JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         String x = jobDataMap.getString("x");
         String y = jobDataMap.getString("y");
