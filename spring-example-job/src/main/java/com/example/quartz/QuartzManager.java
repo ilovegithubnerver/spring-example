@@ -629,15 +629,15 @@ public class QuartzManager {
      */
     public List<JobDetail> listJob() {
         try {
-            List<JobDetail> jobs = new ArrayList<>();
+            List<JobDetail> jobDetails = new ArrayList<>();
             for (String jobGroup : scheduler.getJobGroupNames()) {
                 for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroup))) {
-                    JobDetail job = scheduler.getJobDetail(jobKey);
-                    if (job != null)
-                        jobs.add(job);
+                    JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+                    if (jobDetail != null)
+                        jobDetails.add(jobDetail);
                 }
             }
-            return jobs;
+            return jobDetails;
         } catch (SchedulerException e) {
             e.printStackTrace();
             return new ArrayList<>();
