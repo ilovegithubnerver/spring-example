@@ -14,6 +14,7 @@
         <module>spring-example-autoload-cache</module>
         <module>spring-example-bean-scope</module>
 		<module>spring-example-ioc</module>
+		<module>spring-example-job</module>
         <module>spring-example-multi-transaction</module>
         <module>spring-example-quartz</module>
         <module>spring-example-routing-datasource</module>
