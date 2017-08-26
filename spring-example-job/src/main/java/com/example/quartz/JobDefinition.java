@@ -4,7 +4,7 @@ import org.quartz.Job;
 
 import java.util.Map;
 
-public class ScheduledJob {
+public class JobDefinition {
 
     public static final String TRIGGER_SIMPLE = "SIMPLE";
     public static final String TRIGGER_CRON = "CRON";
@@ -18,7 +18,7 @@ public class ScheduledJob {
     private Long triggerInterval;// 触发器间隔（毫秒）
     private Integer triggerRepeat;// 触发器重复执行次数
 
-    public ScheduledJob(String jobName, String jobGroup, Class<? extends Job> jobClass, Long triggerInterval, Integer triggerRepeat) {
+    public JobDefinition(String jobName, String jobGroup, Class<? extends Job> jobClass, Long triggerInterval, Integer triggerRepeat) {
         this.jobName = jobName;
         this.jobGroup = jobGroup;
         this.jobClass = jobClass;
@@ -27,7 +27,7 @@ public class ScheduledJob {
         this.triggerRepeat = triggerRepeat;
     }
 
-    public ScheduledJob(String jobName, String jobGroup, Class<? extends Job> jobClass, Map<String, Object> jobData, Long triggerInterval, Integer triggerRepeat) {
+    public JobDefinition(String jobName, String jobGroup, Class<? extends Job> jobClass, Map<String, Object> jobData, Long triggerInterval, Integer triggerRepeat) {
         this.jobName = jobName;
         this.jobGroup = jobGroup;
         this.jobClass = jobClass;
@@ -37,7 +37,7 @@ public class ScheduledJob {
         this.triggerRepeat = triggerRepeat;
     }
 
-    public ScheduledJob(String jobName, String jobGroup, Class<? extends Job> jobClass, String triggerCron) {
+    public JobDefinition(String jobName, String jobGroup, Class<? extends Job> jobClass, String triggerCron) {
         this.jobName = jobName;
         this.jobGroup = jobGroup;
         this.jobClass = jobClass;
@@ -45,7 +45,7 @@ public class ScheduledJob {
         this.triggerCron = triggerCron;
     }
 
-    public ScheduledJob(String jobName, String jobGroup, Class<? extends Job> jobClass, Map<String, Object> jobData, String triggerCron) {
+    public JobDefinition(String jobName, String jobGroup, Class<? extends Job> jobClass, Map<String, Object> jobData, String triggerCron) {
         this.jobName = jobName;
         this.jobGroup = jobGroup;
         this.jobClass = jobClass;
