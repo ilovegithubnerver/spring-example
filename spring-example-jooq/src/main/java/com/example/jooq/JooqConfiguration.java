@@ -43,15 +43,15 @@ public class JooqConfiguration {
     }
 
     @Bean
-    public ExceptionTranslator exceptionTransformer() {
+    public ExceptionTranslator exceptionTranslator() {
         return new ExceptionTranslator();
     }
 
     @Bean
-    public DefaultConfiguration configuration(DataSourceConnectionProvider connectionProvider, ExceptionTranslator exceptionTransformer) {
+    public DefaultConfiguration configuration(DataSourceConnectionProvider connectionProvider, ExceptionTranslator exceptionTranslator) {
         DefaultConfiguration configuration = new DefaultConfiguration();
         configuration.set(connectionProvider);
-        configuration.set(new DefaultExecuteListenerProvider(exceptionTransformer));
+        configuration.set(new DefaultExecuteListenerProvider(exceptionTranslator));
         configuration.set(SQLDialect.MYSQL);
         configuration.set(new Settings().withRenderSchema(false));
         return configuration;
