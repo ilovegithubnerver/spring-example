@@ -15,9 +15,16 @@ public class JooqGenerator {
                         .withUser("root")
                         .withPassword("123456"))
                 .withGenerator(new Generator()
+                        .withGenerate(new Generate()
+                                .withImmutablePojos(true))
                         .withDatabase(new Database()
                                 .withName("org.jooq.util.mysql.MySQLDatabase")
                                 .withIncludes("user")
+                                .withUnsignedTypes(false)
+                                .withDateAsTimestamp(false)
+                                .withForcedTypes(
+                                        new ForcedType().withName("BOOLEAN").withTypes("(?i:TINYINT\\(3,\\s*0\\)?)"),
+                                        new ForcedType().withName("DATE").withTypes("(?i:DATE|TIME|DATETIME|TIMESTAMP?)"))
                                 .withInputSchema("test")
                                 .withOutputSchema("schema"))
                         .withTarget(new Target()
