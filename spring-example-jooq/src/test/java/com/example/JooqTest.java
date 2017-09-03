@@ -1,7 +1,7 @@
 package com.example;
 
 import com.example.dao.Schema;
-import com.example.dao.tables.User;
+import com.example.dao.tables.Example;
 import com.example.jooq.JooqConfiguration;
 import org.jooq.DSLContext;
 import org.junit.Test;
@@ -19,10 +19,10 @@ public class JooqTest {
 
     @Test
     public void testInsert() {
-        User USER = Schema.SCHEMA.USER;
-        dsl.insertInto(USER)
-                .columns(USER.ID, USER.ACCOUNT, USER.PASSWORD)
-                .values(1L, "conanli", "123456")
+        Example EXAMPLE = Schema.SCHEMA.EXAMPLE;
+        dsl.insertInto(EXAMPLE)
+                .columns(EXAMPLE.ID, EXAMPLE.NAME, EXAMPLE.CODE)
+                .values(1L, "a", "aaa")
                 .execute();
     }
 }

@@ -19,7 +19,7 @@ public class JooqGenerator {
                                 .withImmutablePojos(true))
                         .withDatabase(new Database()
                                 .withName("org.jooq.util.mysql.MySQLDatabase")
-                                .withIncludes("user")
+                                .withIncludes("example")
                                 .withUnsignedTypes(false)
                                 .withDateAsTimestamp(false)
                                 .withForcedTypes(
