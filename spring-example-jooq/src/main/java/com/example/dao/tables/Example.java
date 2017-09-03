@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Example extends TableImpl<ExampleRecord> {
 
-    private static final long serialVersionUID = 1926415570;
+    private static final long serialVersionUID = -416683129;
 
     /**
      * The reference instance of <code>schema.example</code>
@@ -109,17 +109,12 @@ public class Example extends TableImpl<ExampleRecord> {
     /**
      * The column <code>schema.example.modifiedDate</code>. 最后修改时间
      */
-    public final TableField<ExampleRecord, Date> MODIFIEDDATE = createField("modifiedDate", org.jooq.impl.SQLDataType.DATE.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.DATE)), this, "最后修改时间");
+    public final TableField<ExampleRecord, Date> MODIFIEDDATE = createField("modifiedDate", org.jooq.impl.SQLDataType.DATE.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.DATE)), this, "最后修改时间");
 
     /**
      * The column <code>schema.example.modifiedBy</code>. 操作人
      */
     public final TableField<ExampleRecord, Long> MODIFIEDBY = createField("modifiedBy", org.jooq.impl.SQLDataType.BIGINT.defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.BIGINT)), this, "操作人");
-
-    /**
-     * The column <code>schema.example.version</code>.
-     */
-    public final TableField<ExampleRecord, Date> VERSION = createField("version", org.jooq.impl.SQLDataType.DATE.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.DATE)), this, "");
 
     /**
      * Create a <code>schema.example</code> table reference
