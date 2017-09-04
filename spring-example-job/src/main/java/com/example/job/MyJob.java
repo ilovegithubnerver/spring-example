@@ -1,23 +1,26 @@
 package com.example.job;
 
-import com.example.quartz.LoggedJob;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
-public class MyJob extends LoggedJob {
+public class MyJob implements Job {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void executeJob(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         String x = jobDataMap.getString("x");
         String y = jobDataMap.getString("y");
         logger.info("Job={}, x={}, y={}", jobDetail.getKey().getName(), x, y);
+        sayHello();
+    }
+
+    public void sayHello() {
+        System.out.println("Hello World !");
     }
 }
