@@ -3,6 +3,7 @@ package com.example.schedule;
 import com.example.quartz.QuartzManager;
 import org.quartz.Job;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,32 +23,32 @@ public class ScheduleManager {
     public void init() {
         List<Schedule> schedules = scheduleStore.listSchedule();
         for (Schedule schedule : schedules) {
-            addJob(schedule);
+            start(schedule);
         }
         quartzManager.startScheduler();
     }
 
     public void start(String jobName) {
         Schedule schedule = scheduleStore.getSchedule(jobName);
-        addJob(schedule);
+        start(schedule);
     }
 
     public void stop(String jobName) {
         Schedule schedule = scheduleStore.getSchedule(jobName);
-        removeJob(schedule);
+        stop(schedule);
     }
 
     public void restart(String jobName) {
-        stop(jobName);
-        start(jobName);
+        Schedule schedule = scheduleStore.getSchedule(jobName);
+        restart(schedule);
     }
 
     public void run(String jobName) {
         Schedule schedule = scheduleStore.getSchedule(jobName);
-        runJob(schedule);
+        run(schedule);
     }
 
-    private void addJob(Schedule schedule) {
+    public void start(Schedule schedule) {
         if (!"1".equals(schedule.getIsEnable()))
             return;
 
@@ -63,11 +64,16 @@ public class ScheduleManager {
         }
     }
 
-    private void removeJob(Schedule schedule) {
+    public void stop(Schedule schedule) {
         quartzManager.removeJob(schedule.getJobName(), schedule.getJobGroup());
     }
 
-    private void runJob(Schedule schedule) {
+    public void restart(Schedule schedule) {
+        stop(schedule);
+        start(schedule);
+    }
+
+    public void run(Schedule schedule) {
         String jobGroup = "ONCE";
         Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
         if (jobClass == null)
@@ -82,6 +88,8 @@ public class ScheduleManager {
     }
 
     private Map<String, Object> getJobData(List<Schedule.Param> jobParams) {
+        if (jobParams == null || jobParams.size() == 0)
+            return new HashMap<>();
         return jobParams.stream()
                 .filter((p -> "1".equals(p.getIsEnable())))
                 .collect(Collectors.toMap(p -> p.getParamKey(), p -> p.getParamValue()));
