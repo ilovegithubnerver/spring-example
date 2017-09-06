@@ -7,9 +7,6 @@ import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLStateSQLExceptionTranslator;
 
-/**
- * Created by liweitang on 2017/9/2.
- */
 public class ExceptionTranslator extends DefaultExecuteListener {
 
     private static final long serialVersionUID = 1L;

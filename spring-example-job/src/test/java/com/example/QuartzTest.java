@@ -1,7 +1,6 @@
 package com.example;
 
 import com.example.job.MyJob;
-import com.example.quartz.JobDefinition;
 import com.example.quartz.QuartzConfiguration;
 import com.example.quartz.QuartzManager;
 import org.junit.Test;
@@ -19,19 +18,11 @@ public class QuartzTest {
 
     @Test
     public void test() {
-        JobDefinition jobDefinition = new JobDefinition("myJob", "test", MyJob.class, 1000L, 0);
-
-        addJob(jobDefinition);
+        quartzManager.addJob("myjob", "test", MyJob.class, null, 1000L, 0);
 
         while (Thread.activeCount() > 0)
             Thread.yield();
     }
 
-    public void addJob(JobDefinition jobDefinition) {
-        if (JobDefinition.TRIGGER_SIMPLE.equals(jobDefinition.getTriggerType()))
-            quartzManager.addJob(jobDefinition.getJobName(), jobDefinition.getJobGroup(), jobDefinition.getJobClass(), jobDefinition.getJobData(), jobDefinition.getTriggerInterval(), jobDefinition.getTriggerRepeat());
-        else if (JobDefinition.TRIGGER_CRON.equals(jobDefinition.getTriggerType()))
-            quartzManager.addJob(jobDefinition.getJobName(), jobDefinition.getJobGroup(), jobDefinition.getJobClass(), jobDefinition.getJobData(), jobDefinition.getTriggerCron());
-    }
 
 }

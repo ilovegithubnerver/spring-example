@@ -12,9 +12,6 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 
 import javax.sql.DataSource;
 
-/**
- * Created by liweitang on 2017/9/2.
- */
 public class JooqConfiguration {
 
     @Bean

@@ -9,9 +9,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-/**
- * Created by liweitang on 2017/9/5.
- */
 public class SpringTransactionProvider implements TransactionProvider {
     private static final JooqLogger log = JooqLogger.getLogger(SpringTransactionProvider.class);
 

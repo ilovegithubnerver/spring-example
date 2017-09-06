@@ -1,6 +1,8 @@
 package com.example.job;
 
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,15 +14,6 @@ public class MyJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        JobDetail jobDetail = context.getJobDetail();
-        JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        String x = jobDataMap.getString("x");
-        String y = jobDataMap.getString("y");
-        logger.info("Job={}, x={}, y={}", jobDetail.getKey().getName(), x, y);
-        sayHello();
-    }
-
-    public void sayHello() {
-        System.out.println("Hello World !");
+        logger.info("Hello World !");
     }
 }

@@ -4,9 +4,6 @@ import org.jooq.util.GenerationTool;
 import org.jooq.util.jaxb.*;
 import org.junit.Test;
 
-/**
- * Created by ZhiDian on 2017/9/2.
- */
 public class JooqGenerator {
 
     @Test

@@ -9,9 +9,6 @@ import org.jooq.DSLContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by liweitang on 2017/9/4.
- */
 public class ScheduleStore {
 
     private DSLContext dsl;

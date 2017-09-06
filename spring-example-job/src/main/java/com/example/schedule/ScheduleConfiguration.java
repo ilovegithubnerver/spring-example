@@ -4,13 +4,10 @@ import com.example.quartz.QuartzManager;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
 
-/**
- * Created by liweitang on 2017/9/4.
- */
 public class ScheduleConfiguration {
 
     @Bean
-    public ScheduleStore jobDefinitionStore(DSLContext dsl) {
+    public ScheduleStore scheduleStore(DSLContext dsl) {
         return new ScheduleStore(dsl);
     }
 

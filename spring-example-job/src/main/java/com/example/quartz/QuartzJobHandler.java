@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class JobHandler implements InvocationHandler {
+public class QuartzJobHandler implements InvocationHandler {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Object target;
 
-    public JobHandler(Object target) {
+    public QuartzJobHandler(Object target) {
         this.target = target;
     }
 

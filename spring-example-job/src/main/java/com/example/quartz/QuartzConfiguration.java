@@ -1,14 +1,15 @@
 package com.example.quartz;
 
 import org.quartz.Scheduler;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 public class QuartzConfiguration {
 
     @Bean
-    public QuartzJobFactory jobFactory() {
-        return new QuartzJobFactory();
+    public QuartzJobFactory jobFactory(AutowireCapableBeanFactory beanFactory) {
+        return new QuartzJobFactory(beanFactory);
     }
 
     @Bean
