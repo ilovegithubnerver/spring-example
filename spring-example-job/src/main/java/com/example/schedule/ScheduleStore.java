@@ -46,6 +46,7 @@ public class ScheduleStore {
                             })
                             .collect(Collectors.toList()));
                     schedule.setTriggerType(job.getTriggerType());
+                    schedule.setTriggerCron(job.getTriggerCron());
                     schedule.setTriggerInterval(job.getTriggerInterval() != null ? job.getTriggerInterval().longValue() : 0);
                     schedule.setTriggerRepeat(job.getTriggerRepeat());
                     schedule.setJarPath(job.getJarPath());
@@ -83,6 +84,7 @@ public class ScheduleStore {
                 })
                 .collect(Collectors.toList()));
         schedule.setTriggerType(job.getTriggerType());
+        schedule.setTriggerCron(job.getTriggerCron());
         schedule.setTriggerInterval(job.getTriggerInterval() != null ? job.getTriggerInterval().longValue() : 0);
         schedule.setTriggerRepeat(job.getTriggerRepeat());
         schedule.setJarPath(job.getJarPath());
