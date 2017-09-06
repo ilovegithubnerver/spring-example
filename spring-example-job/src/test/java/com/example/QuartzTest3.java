@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.job.MyJob;
 import com.example.quartz.QuartzConfiguration;
 import com.example.quartz.QuartzManager;
 import com.example.schedule.Schedule;
@@ -10,39 +11,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {QuartzConfiguration.class})
-public class QuartzTest2 {
+public class QuartzTest3 {
 
     @Autowired
     private QuartzManager quartzManager;
 
     @Test
-    public void test() throws Exception {
-        Schedule scheduleAAA = new Schedule();
-        scheduleAAA.setJobName("aaa");
-        scheduleAAA.setJobGroup("test");
-        scheduleAAA.setJobClassName("com.example.MyJob");
-        scheduleAAA.setTriggerType(Schedule.TRIGGER_SIMPLE);
-        scheduleAAA.setTriggerInterval(1000L);
-        scheduleAAA.setTriggerRepeat(0);
-        scheduleAAA.setJarPath("job-example-aaa-0.0.1.jar");
+    public void test() {
+        Schedule schedule = new Schedule();
+        schedule.setJobName("aaa");
+        schedule.setJobGroup("test");
+        schedule.setJobClassName("com.zhidian.cloud.analyze.job.Main");
+        schedule.setTriggerType(Schedule.TRIGGER_SIMPLE);
+        schedule.setTriggerInterval(1000L);
+        schedule.setTriggerRepeat(0);
+        schedule.setJarPath("file:///D:/zhidian-repository/zhidian-cloud-analyze/analyze-job-jar/analyze-job-order/target/analyze-job-order-0.0.1-jar-with-dependencies.jar");
 
-        Schedule scheduleBBB = new Schedule();
-        scheduleBBB.setJobName("bbb");
-        scheduleBBB.setJobGroup("test");
-        scheduleBBB.setJobClassName("com.example.MyJob");
-        scheduleBBB.setTriggerType(Schedule.TRIGGER_SIMPLE);
-        scheduleBBB.setTriggerInterval(1000L);
-        scheduleBBB.setTriggerRepeat(0);
-        scheduleBBB.setJarPath("job-example-bbb-0.0.1.jar");
+        addJob(schedule);
 
-        addJob(scheduleAAA);
-        addJob(scheduleBBB);
-        quartzManager.startScheduler();
         while (Thread.activeCount() > 0)
             Thread.yield();
     }
@@ -59,19 +51,12 @@ public class QuartzTest2 {
 
     private Class<? extends Job> getJobClass(String jobClassName, String jarPath) {
         try {
-            URL jar = getJar(jarPath);
+            URL jar = new URL(jarPath);
             URLClassLoader classLoader = new URLClassLoader(new URL[]{jar}, getClass().getClassLoader(), null);
             return (Class<? extends Job>) classLoader.loadClass(jobClassName);
-        } catch (ClassNotFoundException e) {
+        } catch (MalformedURLException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private URL getJar(String jarName) {
-        URL url = getClass().getClassLoader().getResource(jarName);
-        if (url != null)
-            return url;
-        return null;
     }
 }
