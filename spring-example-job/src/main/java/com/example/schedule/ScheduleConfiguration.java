@@ -12,8 +12,13 @@ public class ScheduleConfiguration {
     }
 
     @Bean
-    public ScheduleManager scheduleManager(QuartzManager quartzManager, ScheduleStore jobDefinitionStore) {
-        ScheduleManager scheduleManager = new ScheduleManager(quartzManager, jobDefinitionStore);
+    public ScheduleLoader scheduleLoader() {
+        return new ScheduleLoader();
+    }
+
+    @Bean
+    public ScheduleManager scheduleManager(QuartzManager quartzManager, ScheduleStore jobDefinitionStore, ScheduleLoader scheduleLoader) {
+        ScheduleManager scheduleManager = new ScheduleManager(quartzManager, jobDefinitionStore, scheduleLoader);
         scheduleManager.init();
         return scheduleManager;
     }

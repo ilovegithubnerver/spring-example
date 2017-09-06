@@ -3,9 +3,6 @@ package com.example.schedule;
 import com.example.quartz.QuartzManager;
 import org.quartz.Job;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,10 +11,12 @@ public class ScheduleManager {
 
     private QuartzManager quartzManager;
     private ScheduleStore scheduleStore;
+    private ScheduleLoader scheduleLoader;
 
-    public ScheduleManager(QuartzManager quartzManager, ScheduleStore scheduleStore) {
+    public ScheduleManager(QuartzManager quartzManager, ScheduleStore scheduleStore, ScheduleLoader scheduleLoader) {
         this.quartzManager = quartzManager;
         this.scheduleStore = scheduleStore;
+        this.scheduleLoader = scheduleLoader;
     }
 
     public void init() {
@@ -52,7 +51,7 @@ public class ScheduleManager {
         if (!"1".equals(schedule.getIsEnable()))
             return;
 
-        Class<? extends Job> jobClass = getJobClass(schedule.getJobClassName(), schedule.getJarPath());
+        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
         if (jobClass == null)
             return;
         Map<String, Object> jobData = getJobData(schedule.getJobParams());
@@ -70,7 +69,7 @@ public class ScheduleManager {
 
     private void runJob(Schedule schedule) {
         String jobGroup = "ONCE";
-        Class<? extends Job> jobClass = getJobClass(schedule.getJobClassName(), schedule.getJarPath());
+        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
         if (jobClass == null)
             return;
         Map<String, Object> jobData = getJobData(schedule.getJobParams());
@@ -80,17 +79,6 @@ public class ScheduleManager {
         }
         quartzManager.addJob(schedule.getJobName(), jobGroup, jobClass, jobData);
         quartzManager.triggerJob(schedule.getJobName(), schedule.getJobGroup());
-    }
-
-    private Class<? extends Job> getJobClass(String jobClassName, String jarPath) {
-        try {
-            URL jar = new URL(jarPath);
-            URLClassLoader classLoader = new URLClassLoader(new URL[]{jar}, getClass().getClassLoader(), null);
-            return (Class<? extends Job>) classLoader.loadClass(jobClassName);
-        } catch (MalformedURLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private Map<String, Object> getJobData(List<Schedule.Param> jobParams) {
