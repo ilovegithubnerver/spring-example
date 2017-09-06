@@ -13,6 +13,6 @@ public class ScheduleApi {
 
     @PostMapping("/say")
     public String say() {
-        return "";
+        return "hello world";
     }
 }
