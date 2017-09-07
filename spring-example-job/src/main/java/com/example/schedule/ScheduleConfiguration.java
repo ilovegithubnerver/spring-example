@@ -22,9 +22,15 @@ public class ScheduleConfiguration {
     }
 
     @Bean
-    public ScheduleListener scheduleListener(ScheduleLog4jAppender scheduleLog4jAppender) {
+    public ScheduleLogbackAppender scheduleLogbackAppender() {
+        return new ScheduleLogbackAppender();
+    }
+
+    @Bean
+    public ScheduleListener scheduleListener(ScheduleLog4jAppender scheduleLog4jAppender, ScheduleLogbackAppender scheduleLogbackAppender) {
         ScheduleListener scheduleListener = new ScheduleListener();
         scheduleListener.setScheduleLog4jAppender(scheduleLog4jAppender);
+        scheduleListener.setScheduleLogbackAppender(scheduleLogbackAppender);
         return scheduleListener;
     }
 

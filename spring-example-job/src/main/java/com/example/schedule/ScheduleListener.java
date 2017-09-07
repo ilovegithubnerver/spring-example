@@ -12,6 +12,7 @@ public class ScheduleListener implements JobListener {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ScheduleLog4jAppender scheduleLog4jAppender;
+    private ScheduleLogbackAppender scheduleLogbackAppender;
 
     @Override
     public String getName() {
@@ -39,10 +40,16 @@ public class ScheduleListener implements JobListener {
         logger.info("Schedule 结束: name={}, data={}", jobDetail.getKey().getName(), jobDetail.getJobDataMap().getWrappedMap());
         if (scheduleLog4jAppender != null)
             scheduleLog4jAppender.close();
+        if (scheduleLogbackAppender != null)
+            scheduleLogbackAppender.close();
         ScheduleHolder.set(null);
     }
 
     public void setScheduleLog4jAppender(ScheduleLog4jAppender scheduleLog4jAppender) {
         this.scheduleLog4jAppender = scheduleLog4jAppender;
+    }
+
+    public void setScheduleLogbackAppender(ScheduleLogbackAppender scheduleLogbackAppender) {
+        this.scheduleLogbackAppender = scheduleLogbackAppender;
     }
 }
