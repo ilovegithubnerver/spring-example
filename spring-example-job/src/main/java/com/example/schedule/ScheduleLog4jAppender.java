@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ScheduleAppender extends AppenderSkeleton {
+public class ScheduleLog4jAppender extends AppenderSkeleton {
 
     private ThreadLocal<FileWriter> fileWriterHolder = new ThreadLocal<>();
     private SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
