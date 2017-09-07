@@ -21,7 +21,11 @@ public class ScheduleListener implements JobListener {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
         JobDetail jobDetail = context.getJobDetail();
-        ScheduleHolder.setJobName(jobDetail.getKey().getName());
+        Schedule schedule = new Schedule();
+        schedule.setJobName(jobDetail.getKey().getName());
+        schedule.setJobGroup(jobDetail.getKey().getGroup());
+        schedule.setJarPath(jobDetail.getJobDataMap().getString("jarPath"));
+        ScheduleHolder.set(schedule);
         logger.info("Schedule 开始: name={}, data={}", jobDetail.getKey().getName(), jobDetail.getJobDataMap().getWrappedMap());
     }
 
@@ -35,7 +39,7 @@ public class ScheduleListener implements JobListener {
         logger.info("Schedule 结束: name={}, data={}", jobDetail.getKey().getName(), jobDetail.getJobDataMap().getWrappedMap());
         if (scheduleAppender != null)
             scheduleAppender.close();
-        ScheduleHolder.setJobName(null);
+        ScheduleHolder.set(null);
     }
 
     public void setScheduleAppender(ScheduleAppender scheduleAppender) {

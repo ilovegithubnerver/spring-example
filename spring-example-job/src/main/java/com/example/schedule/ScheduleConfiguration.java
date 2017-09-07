@@ -23,7 +23,6 @@ public class ScheduleConfiguration {
     public ScheduleAppender scheduleAppender() {
         ScheduleAppender scheduleAppender = new ScheduleAppender();
         scheduleAppender.setName("scheduleAppender");
-        scheduleAppender.setPath("d:");
         scheduleAppender.setThreshold(Level.DEBUG);
         scheduleAppender.setLayout(new PatternLayout("%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5p [%15.15t] %40.40l : %m%n"));
         scheduleAppender.activateOptions();

@@ -2,13 +2,13 @@ package com.example.schedule;
 
 public class ScheduleHolder {
 
-    private static ThreadLocal<String> jobNameHolder = new ThreadLocal();
+    private static ThreadLocal<Schedule> holder = new ThreadLocal();
 
-    public static void setJobName(String jobName) {
-        jobNameHolder.set(jobName);
+    public static void set(Schedule schedule) {
+        holder.set(schedule);
     }
 
-    public static String getJobName() {
-        return jobNameHolder.get();
+    public static Schedule get() {
+        return holder.get();
     }
 }

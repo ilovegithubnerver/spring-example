@@ -56,6 +56,7 @@ public class ScheduleManager {
         if (jobClass == null)
             return;
         Map<String, Object> jobData = getJobData(schedule.getJobParams());
+        jobData.put("jarPath", schedule.getJarPath());
 
         if (Schedule.TRIGGER_SIMPLE.equals(schedule.getTriggerType())) {
             quartzManager.addJob(schedule.getJobName(), schedule.getJobGroup(), jobClass, jobData, schedule.getTriggerInterval(), schedule.getTriggerRepeat());
@@ -79,6 +80,7 @@ public class ScheduleManager {
         if (jobClass == null)
             return;
         Map<String, Object> jobData = getJobData(schedule.getJobParams());
+        jobData.put("jarPath", schedule.getJarPath());
 
         if (quartzManager.hasJob(schedule.getJobName(), jobGroup)) {
             quartzManager.removeJob(schedule.getJobName(), jobGroup);
