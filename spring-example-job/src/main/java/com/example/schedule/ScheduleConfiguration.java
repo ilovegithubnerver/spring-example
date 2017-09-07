@@ -17,20 +17,17 @@ public class ScheduleConfiguration {
     }
 
     @Bean
-    public ScheduleLog4jAppender scheduleLog4jAppender() {
-        return new ScheduleLog4jAppender();
+    public ScheduleAppender scheduleAppender() {
+        ScheduleAppender scheduleAppender = new ScheduleAppender();
+        ScheduleLog4jAppenderRegister.regist(scheduleAppender);
+        ScheduleLogbackAppenderRegister.regist(scheduleAppender);
+        return scheduleAppender;
     }
 
     @Bean
-    public ScheduleLogbackAppender scheduleLogbackAppender() {
-        return new ScheduleLogbackAppender();
-    }
-
-    @Bean
-    public ScheduleListener scheduleListener(ScheduleLog4jAppender scheduleLog4jAppender, ScheduleLogbackAppender scheduleLogbackAppender) {
+    public ScheduleListener scheduleListener(ScheduleAppender scheduleAppender) {
         ScheduleListener scheduleListener = new ScheduleListener();
-        scheduleListener.setScheduleLog4jAppender(scheduleLog4jAppender);
-        scheduleListener.setScheduleLogbackAppender(scheduleLogbackAppender);
+        scheduleListener.setScheduleAppender(scheduleAppender);
         return scheduleListener;
     }
 

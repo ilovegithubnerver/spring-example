@@ -1,22 +1,17 @@
 package com.example;
 
 import com.example.schedule.Schedule;
+import com.example.schedule.ScheduleAppender;
 import com.example.schedule.ScheduleHolder;
-import com.example.schedule.ScheduleLog4jAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
+import com.example.schedule.ScheduleLog4jAppenderRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScheduleAppenderTest {
 
     public static void main(String[] args) {
-        ScheduleLog4jAppender appender = new ScheduleLog4jAppender();
-        appender.setName("scheduleLog4jAppender");
-        appender.setThreshold(Level.DEBUG);
-        appender.setLayout(new PatternLayout("%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5p [%15.15t] %40.40l : %m%n"));
-        appender.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(appender);
+        ScheduleAppender scheduleAppender = new ScheduleAppender();
+        ScheduleLog4jAppenderRegister.regist(scheduleAppender);
 
         new Thread(new Runnable() {
             @Override
