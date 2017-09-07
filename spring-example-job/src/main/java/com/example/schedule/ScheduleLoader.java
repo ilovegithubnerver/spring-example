@@ -14,7 +14,7 @@ public class ScheduleLoader {
 
     public Class<? extends Job> loadClass(String jobName, String jobClassName, String jarPath) {
         try {
-            URL jar = new URL("file:///" + jarPath);
+            URL jar = new URL("file://" + (jarPath.startsWith("/") ? jarPath : "/" + jarPath));
             URLClassLoader classLoader = new URLClassLoader(new URL[]{jar}, getClass().getClassLoader(), null);
             LinkedBlockingQueue<URLClassLoader> classLoaderQueue = classLoaders.get(jobName);
             if (classLoaderQueue == null) {
