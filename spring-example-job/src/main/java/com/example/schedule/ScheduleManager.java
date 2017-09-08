@@ -1,9 +1,7 @@
 package com.example.schedule;
 
 import com.example.quartz.QuartzManager;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
+import org.quartz.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,21 +48,26 @@ public class ScheduleManager {
         run(schedule);
     }
 
+    public void delete(String jobName) {
+        stop(jobName);
+        scheduleStore.delete(jobName);
+    }
+
     public List<Schedule> list() {
         List<Schedule> schedules = scheduleStore.list();
 
-        List<JobExecutionContext> executions = quartzManager.listExecution();
-        for (JobExecutionContext execution : executions) {
-            JobDetail job = execution.getJobDetail();
-            Schedule schedule = schedules.stream()
-                    .filter(s -> s.getJobName().equals(job.getKey().getName()))
-                    .findFirst()
-                    .orElse(null);
-            if (schedule != null) {
+        for (Schedule schedule : schedules) {
+            List<? extends Trigger> triggers = quartzManager.listTrigger(JobKey.jobKey(schedule.getJobName(), schedule.getJobGroup()));
+            for (Trigger trigger : triggers) {
+                if (trigger.getNextFireTime() == null)
+                    continue;
                 schedule.setIsRunning("1");
-                schedule.setNextFireTime(execution.getNextFireTime());
+                if (schedule.getNextFireTime() == null || schedule.getNextFireTime().compareTo(trigger.getNextFireTime()) == 1) {
+                    schedule.setNextFireTime(trigger.getNextFireTime());
+                }
             }
         }
+
         return schedules;
     }
 

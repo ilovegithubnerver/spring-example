@@ -17,39 +17,48 @@ public class ScheduleApi {
     ScheduleManager scheduleManager;
 
     @PostMapping("/start")
-    public String start(@RequestBody ScheduleQueryParams params) {
+    public Boolean start(@RequestBody ScheduleQueryParams params) {
         if (params.getJobName() == null) {
-            return "任务名不能为空";
+            return false;
         }
         scheduleManager.start(params.getJobName());
-        return "OK";
+        return true;
     }
 
     @PostMapping("/stop")
-    public String stop(@RequestBody ScheduleQueryParams params) {
+    public Boolean stop(@RequestBody ScheduleQueryParams params) {
         if (params.getJobName() == null) {
-            return "任务名不能为空";
+            return false;
         }
         scheduleManager.stop(params.getJobName());
-        return "OK";
+        return true;
     }
 
     @PostMapping("/restart")
-    public String restart(@RequestBody ScheduleQueryParams params) {
+    public Boolean restart(@RequestBody ScheduleQueryParams params) {
         if (params.getJobName() == null) {
-            return "任务名不能为空";
+            return false;
         }
         scheduleManager.restart(params.getJobName());
-        return "OK";
+        return true;
     }
 
     @PostMapping("/run")
-    public String run(@RequestBody ScheduleQueryParams params) {
+    public Boolean run(@RequestBody ScheduleQueryParams params) {
         if (params.getJobName() == null) {
-            return "任务名不能为空";
+            return false;
         }
         scheduleManager.run(params.getJobName());
-        return "OK";
+        return true;
+    }
+
+    @PostMapping("/delete")
+    public Boolean delete(@RequestBody ScheduleQueryParams params) {
+        if (params.getJobName() == null) {
+            return false;
+        }
+        scheduleManager.delete(params.getJobName());
+        return true;
     }
 
     @PostMapping("/list")

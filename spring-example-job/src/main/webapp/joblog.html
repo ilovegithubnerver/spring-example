@@ -41,25 +41,25 @@
 <script type="text/html" id="tool">
     <a class="layui-btn layui-btn-mini" lay-event="look" id="bbb">查看</a>
 </script>
-<script type="text/html" id="tool2">
-    <div id="sss">
-        <textarea id="look-area"></textarea>
-    </div>
-    <a class="layui-btn layui-btn-mini" lay-event="look" id="lll">查看</a>
+<script type="text/html" id="tpl_look">
+    <pre class="layui-code">{{ d.jobLog }}</pre>
 </script>
 <script type="text/javascript">
-    layui.use(['table'], function () {
+    layui.use(['laytpl', 'table'], function () {
         var $ = layui.jquery;
+        var laytpl = layui.laytpl;
         var table = layui.table;
 
         table.on('tool(list)', function (e) {
-            var d = e.data;
-            $('#look-area').val(d.jobLog)
             if (e.event === 'look') {
-                layer.open({
-                    type: 1,
-                    area: ['800px', 'auto'],
-                    content: $('#lll')
+                var d = e.data;
+                laytpl(tpl_look.innerHTML).render(d, function (html) {
+                    layer.open({
+                        type: 1,
+                        area: '800px',
+                        title: d.jobName + ' ' + d.createDateText,
+                        content: html
+                    });
                 });
             }
         });

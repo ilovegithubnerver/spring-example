@@ -34,13 +34,11 @@
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
         <thead>
         <tr>
-            <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
-            <th lay-data="{field:'job', width:280}">任务</th>
-            <th lay-data="{field:'jobClassName', width:260}">类名</th>
-            <th lay-data="{field:'trigger', width:200}">触发器</th>
+            <th lay-data="{toolbar:'#tool', width:200, align:'center'}">操作</th>
             <th lay-data="{field:'isEnableText', width:60}">启用</th>
-            <th lay-data="{field:'isRunningText', width:60}">运行</th>
-            <th lay-data="{field:'nextFireTimeText', width:160}">下次运行时间</th>
+            <th lay-data="{field:'job', width:320}">任务</th>
+            <th lay-data="{field:'trigger', width:200}">触发器</th>
+            <th lay-data="{field:'nextFireTimeText', width:165}">下次运行时间</th>
             <th lay-data="{field:'jarPath', width:150}">JAR</th>
         </tr>
         </thead>
@@ -50,6 +48,13 @@
 
 <script type="text/html" id="tool">
     <a class="layui-btn layui-btn-mini" lay-event="update">编辑</a>
+    {{#  if(d.isRunning == '0' && d.isEnable == '1'){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="start">开始</a>
+    {{#  } }}
+    {{#  if(d.isRunning == '1'){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="stop">停止</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-mini" lay-event="run">执行</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
 <script type="text/javascript">
@@ -59,10 +64,35 @@
 
         table.on('tool(list)', function (e) {
             var d = e.data;
-            if (e.event === 'update') {
+            if (e.event == 'update') {
                 layer.alert('开发中...');
-            } else if (e.event === 'delete') {
-                layer.alert('开发中...');
+            } else if (e.event == 'start') {
+                $.post2('schedule/start', {jobName: d.jobName}, function (data) {
+                    if (data) {
+                        loadData();
+                    }
+                });
+            } else if (e.event == 'stop') {
+                $.post2('schedule/stop', {jobName: d.jobName}, function (data) {
+                    if (data) {
+                        loadData();
+                    }
+                });
+            } else if (e.event == 'run') {
+                $.post2('schedule/run', {jobName: d.jobName}, function (data) {
+                    if (data) {
+                        loadData();
+                    }
+                });
+            } else if (e.event == 'delete') {
+                layer.confirm('真的删除行么？', function (index) {
+                    $.post2('schedule/delete', {jobName: d.jobName}, function (data) {
+                        if (data) {
+                            loadData();
+                            layer.close(index);
+                        }
+                    });
+                });
             }
         });
 
@@ -79,15 +109,15 @@
         function dataConverter(data) {
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
-                d.job = d.jobName + ' | ' + d.jobGroup;
+                d.job = d.jobName + ' | ' + d.jobGroup + ' | ' + d.jobClassName;
                 if (d.triggerType == 'SIMPLE') {
-                    d.trigger = d.triggerType + ' | ' + '间隔 ' + d.triggerInterval + " 重复 " + d.triggerRepeat;
+                    d.trigger = '间隔 ' + d.triggerInterval + " 重复 " + d.triggerRepeat;
                 }
                 if (d.triggerType == 'CRON') {
-                    d.trigger = d.triggerType + ' | ' + d.triggerCron;
+                    d.trigger = d.triggerCron;
                 }
                 d.isEnableText = d.isEnable == '1' ? '是' : '否';
-                d.isRunningText = d.isEnable == '1' ? '是' : '否';
+                d.isRunningText = d.isRunning == '1' ? '是' : '否';
                 if (d.nextFireTime) {
                     d.nextFireTimeText = new Date(d.nextFireTime).format('yyyy-MM-dd HH:mm:ss');
                 }

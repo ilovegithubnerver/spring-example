@@ -95,7 +95,22 @@ public class ScheduleStore {
         return schedule;
     }
 
-    public void addLog(String jobName, String jobLog) {
+    public void delete(String jobName) {
+        Job JOB = Job.JOB;
+        JobParam JOB_PARAM = JobParam.JOB_PARAM;
+        JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
+
+        dsl.deleteFrom(JOB)
+                .where(JOB.JOB_NAME.eq(jobName))
+                .execute();
+        dsl.deleteFrom(JOB_PARAM)
+                .where(JOB_PARAM.JOB_NAME.eq(jobName));
+        dsl.deleteFrom(JOB_HISTORY)
+                .where(JOB_HISTORY.JOB_NAME.eq(jobName))
+                .execute();
+    }
+
+    public void saveLog(String jobName, String jobLog) {
         JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
 
         dsl.insertInto(JOB_HISTORY)

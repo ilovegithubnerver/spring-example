@@ -43,7 +43,7 @@ public class ScheduleListener implements JobListener {
             return;
         if (scheduleAppender != null) {
             if (scheduleStore != null) {
-                scheduleStore.addLog(schedule.getJobName(), scheduleAppender.getLog());
+                scheduleStore.saveLog(schedule.getJobName(), scheduleAppender.getLog());
             }
             scheduleAppender.close();
         }
