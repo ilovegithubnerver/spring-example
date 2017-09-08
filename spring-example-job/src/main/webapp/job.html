@@ -69,7 +69,7 @@
         loadData();
 
         function loadData() {
-            $.post2('apis/schedule/list', {}, function (res) {
+            $.post2('schedule/list', {}, function (res) {
                 table.reload('list', {
                     data: dataConverter(res.data)
                 });
