@@ -8,10 +8,94 @@
 
     <title>任务</title>
 
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+
 </head>
 
 <body>
-dddddd
+
+<!-- 头部固定区域 -->
+<ul class="layui-nav">
+    <li class="layui-nav-item"><a href="job.html">任务</a></li>
+    <li class="layui-nav-item"><a href="joblog.html">任务日志</a></li>
+</ul>
+<!-- 头部固定区域 -->
+
+
+<!-- 内容主体区域 -->
+<div class="layui-fluid">
+
+    <div class="layui-btn-group">
+        <button class="layui-btn">添加</button>
+    </div>
+
+    <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
+        <thead>
+        <tr>
+            <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
+            <th lay-data="{field:'job', width:280}">任务</th>
+            <th lay-data="{field:'jobClassName', width:260}">类名</th>
+            <th lay-data="{field:'trigger', width:200}">触发器</th>
+            <th lay-data="{field:'isEnableText', width:60}">启用</th>
+            <th lay-data="{field:'isRunningText', width:60}">运行</th>
+            <th lay-data="{field:'nextFireTimeText', width:160}">下次运行时间</th>
+            <th lay-data="{field:'jarPath', width:150}">JAR</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<!-- 内容主体区域 -->
+
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-mini" lay-event="update">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+
+        table.on('tool(list)', function (e) {
+            var d = e.data;
+            if (e.event === 'update') {
+                layer.alert('开发中...');
+            } else if (e.event === 'delete') {
+                layer.alert('开发中...');
+            }
+        });
+
+        loadData();
+
+        function loadData() {
+            $.post2('apis/schedule/list', {}, function (res) {
+                table.reload('list', {
+                    data: dataConverter(res.data)
+                });
+            });
+        }
+
+        function dataConverter(data) {
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                d.job = d.jobName + ' | ' + d.jobGroup;
+                if (d.triggerType == 'SIMPLE') {
+                    d.trigger = d.triggerType + ' | ' + '间隔 ' + d.triggerInterval + " 重复 " + d.triggerRepeat;
+                }
+                if (d.triggerType == 'CRON') {
+                    d.trigger = d.triggerType + ' | ' + d.triggerCron;
+                }
+                d.isEnableText = d.isEnable == '1' ? '是' : '否';
+                d.isRunningText = d.isEnable == '1' ? '是' : '否';
+                if (d.nextFireTime) {
+                    d.nextFireTimeText = new Date(d.nextFireTime).format('yyyy-MM-dd HH:mm:ss');
+                }
+            }
+            return data;
+        }
+    });
+</script>
 </body>
 
 </html>

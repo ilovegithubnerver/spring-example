@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>任务日志</title>
+
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+</head>
+
+<body>
+
+<!-- 头部固定区域 -->
+<ul class="layui-nav">
+    <li class="layui-nav-item"><a href="job.html">任务</a></li>
+    <li class="layui-nav-item"><a href="joblog.html">任务日志</a></li>
+</ul>
+<!-- 头部固定区域 -->
+
+
+<!-- 内容主体区域 -->
+<div class="layui-fluid">
+    <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
+        <thead>
+        <tr>
+            <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
+            <th lay-data="{field:'jobName', width:200}">任务名</th>
+            <th lay-data="{field:'createDateText', width:200}">时间</th>
+            <th lay-data="{field:'jobLog', width:800}">日志</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<!-- 内容主体区域 -->
+
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-mini" lay-event="look" id="bbb">查看</a>
+</script>
+<script type="text/html" id="tool2">
+    <div id="sss">
+        <textarea id="look-area"></textarea>
+    </div>
+    <a class="layui-btn layui-btn-mini" lay-event="look" id="lll">查看</a>
+</script>
+<script type="text/javascript">
+    layui.use(['table'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+
+        table.on('tool(list)', function (e) {
+            var d = e.data;
+            $('#look-area').val(d.jobLog)
+            if (e.event === 'look') {
+                layer.open({
+                    type: 1,
+                    area: ['800px', 'auto'],
+                    content: $('#lll')
+                });
+            }
+        });
+
+        loadData();
+
+        function loadData() {
+            $.post2('apis/schedule/listLog', {}, function (res) {
+                table.reload('list', {
+                    data: dataConverter(res.data)
+                });
+            });
+        }
+
+        function dataConverter(data) {
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                if (d.createDate) {
+                    d.createDateText = new Date(d.createDate).format('yyyy-MM-dd HH:mm:ss');
+                }
+
+            }
+            return data;
+        }
+    });
+</script>
+</body>
+
+</html>
