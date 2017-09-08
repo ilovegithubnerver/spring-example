@@ -58,6 +58,14 @@ public class ScheduleStore {
                 }).collect(Collectors.toList());
     }
 
+    public List<String> listName() {
+        Job JOB = Job.JOB;
+
+        return dsl.select(JOB.JOB_NAME)
+                .from(JOB)
+                .fetch(JOB.JOB_NAME);
+    }
+
     public Schedule get(String jobName) {
         Job JOB = Job.JOB;
         JobParam JOB_PARAM = JobParam.JOB_PARAM;

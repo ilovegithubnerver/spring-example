@@ -24,7 +24,12 @@
 
 
 <!-- 内容主体区域 -->
-<div class="layui-fluid">
+<div class="layui-fluid" style="padding-top:15px">
+    <div class="layui-form" style="width:200px">
+        <select id="job-name" lay-filter="job-name">
+            <option value="">任务</option>
+        </select>
+    </div>
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
         <thead>
         <tr>
@@ -38,17 +43,36 @@
 </div>
 <!-- 内容主体区域 -->
 
+
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-mini" lay-event="look" id="bbb">查看</a>
+    <a class="layui-btn layui-btn-mini" lay-event="look">查看</a>
 </script>
+
+<script type="text/html" id="tpl_job_name">
+    <option value="">任务</option>
+    {{#  layui.each(d, function(index, item){ }}
+    <option value="{{ item }}">{{ item }}</option>
+    {{#  }); }}
+</script>
+
 <script type="text/html" id="tpl_look">
     <pre class="layui-code">{{ d.jobLog }}</pre>
 </script>
+
+
 <script type="text/javascript">
-    layui.use(['laytpl', 'table'], function () {
+    layui.use(['laytpl', 'form', 'table'], function () {
         var $ = layui.jquery;
         var laytpl = layui.laytpl;
+        var form = layui.form;
         var table = layui.table;
+
+        loadJobName();
+        loadData();
+
+        form.on('select(job-name)', function (e) {
+            loadData(e.value);
+        });
 
         table.on('tool(list)', function (e) {
             if (e.event === 'look') {
@@ -64,10 +88,17 @@
             }
         });
 
-        loadData();
+        function loadJobName() {
+            $.post2('schedule/listName', {}, function (data) {
+                laytpl(tpl_job_name.innerHTML).render(data, function (html) {
+                    document.getElementById('job-name').innerHTML = html;
+                    form.render('select');
+                });
+            });
+        }
 
-        function loadData() {
-            $.post2('schedule/listLog', {}, function (data) {
+        function loadData(jobName) {
+            $.post2('schedule/listLog', {jobName: jobName}, function (data) {
                 table.reload('list', {
                     data: dataConverter(data)
                 });
@@ -80,7 +111,6 @@
                 if (d.createDate) {
                     d.createDateText = new Date(d.createDate).format('yyyy-MM-dd HH:mm:ss');
                 }
-
             }
             return data;
         }

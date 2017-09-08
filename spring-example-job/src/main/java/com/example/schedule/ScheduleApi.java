@@ -67,6 +67,12 @@ public class ScheduleApi {
         return schedules;
     }
 
+    @PostMapping("/listName")
+    public List<String> listName() {
+        List<String> jobNames = scheduleManager.listName();
+        return jobNames;
+    }
+
     @PostMapping("/listLog")
     public List<ScheduleLog> listLog(@RequestBody ScheduleQueryParams params) {
         List<ScheduleLog> scheduleLogs = scheduleManager.listLog(params.getJobName());

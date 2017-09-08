@@ -1,7 +1,9 @@
 package com.example.schedule;
 
 import com.example.quartz.QuartzManager;
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobKey;
+import org.quartz.Trigger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +71,10 @@ public class ScheduleManager {
         }
 
         return schedules;
+    }
+
+    public List<String> listName() {
+        return scheduleStore.listName();
     }
 
     public List<ScheduleLog> listLog(String jobName) {

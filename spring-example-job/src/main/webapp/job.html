@@ -25,7 +25,7 @@
 
 
 <!-- 内容主体区域 -->
-<div class="layui-fluid">
+<div class="layui-fluid" style="padding-top:15px">
 
     <div class="layui-btn-group">
         <button class="layui-btn">添加</button>
@@ -46,6 +46,7 @@
 </div>
 <!-- 内容主体区域 -->
 
+
 <script type="text/html" id="tool">
     <a class="layui-btn layui-btn-mini" lay-event="update">编辑</a>
     {{#  if(d.isRunning == '0' && d.isEnable == '1'){ }}
@@ -57,10 +58,14 @@
     <a class="layui-btn layui-btn-mini" lay-event="run">执行</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
+
+
 <script type="text/javascript">
     layui.use(['table'], function () {
         var $ = layui.jquery;
         var table = layui.table;
+
+        loadData();
 
         table.on('tool(list)', function (e) {
             var d = e.data;
@@ -95,8 +100,6 @@
                 });
             }
         });
-
-        loadData();
 
         function loadData() {
             $.post2('schedule/list', {}, function (data) {
