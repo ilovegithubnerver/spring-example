@@ -67,9 +67,9 @@
         loadData();
 
         function loadData() {
-            $.post2('schedule/listLog', {}, function (res) {
+            $.post2('schedule/listLog', {}, function (data) {
                 table.reload('list', {
-                    data: dataConverter(res.data)
+                    data: dataConverter(data)
                 });
             });
         }

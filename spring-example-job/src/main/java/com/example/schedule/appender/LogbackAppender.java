@@ -4,10 +4,13 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.layout.TTLLLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import com.example.schedule.ScheduleAppender;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,7 @@ public class LogbackAppender extends AppenderBase<ILoggingEvent> {
 
     private boolean inited = false;
     private ScheduleAppender scheduleAppender;
-    private PatternLayout layout;
+    private Layout layout;
 
     public static void regist(ScheduleAppender scheduleAppender) {
         new LogbackAppender(scheduleAppender);
@@ -44,20 +47,32 @@ public class LogbackAppender extends AppenderBase<ILoggingEvent> {
             }
         }
 
-        if (consoleAppender == null || !(consoleAppender.getEncoder() instanceof PatternLayoutEncoder))
+        if (consoleAppender == null)
             return;
 
-        PatternLayout layout = new PatternLayout();
-        layout.setContext(loggerContext);
-        layout.setPattern(((PatternLayoutEncoder) consoleAppender.getEncoder()).getPattern());
-        layout.start();
+        if (consoleAppender.getEncoder() instanceof LayoutWrappingEncoder) {
+            TTLLLayout ttllLayout = new TTLLLayout();
+            ttllLayout.setContext(loggerContext);
+            ttllLayout.start();
+            layout = ttllLayout;
+        }
+
+        if (consoleAppender.getEncoder() instanceof PatternLayoutEncoder) {
+            PatternLayout patternLayout = new PatternLayout();
+            patternLayout.setContext(loggerContext);
+            patternLayout.setPattern(((PatternLayoutEncoder) consoleAppender.getEncoder()).getPattern());
+            patternLayout.start();
+            layout = patternLayout;
+        }
+
+        if (layout == null)
+            return;
 
         setName("scheduleLogbackAppender");
         setContext(loggerContext);
         start();
         rootLogger.addAppender(this);
 
-        this.layout = layout;
         this.scheduleAppender = scheduleAppender;
         this.inited = true;
     }

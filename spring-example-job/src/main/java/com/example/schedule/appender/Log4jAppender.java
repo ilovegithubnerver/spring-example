@@ -26,7 +26,7 @@ public class Log4jAppender extends AppenderSkeleton {
             }
         }
 
-        if (consoleAppender == null || !(consoleAppender.getLayout() instanceof PatternLayout))
+        if (consoleAppender == null)
             return;
 
         setName("scheduleLog4jAppender");
