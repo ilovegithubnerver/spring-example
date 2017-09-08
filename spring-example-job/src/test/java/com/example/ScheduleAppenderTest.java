@@ -3,7 +3,7 @@ package com.example;
 import com.example.schedule.Schedule;
 import com.example.schedule.ScheduleAppender;
 import com.example.schedule.ScheduleHolder;
-import com.example.schedule.ScheduleLog4jAppenderRegister;
+import com.example.schedule.appender.Log4jAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +11,7 @@ public class ScheduleAppenderTest {
 
     public static void main(String[] args) {
         ScheduleAppender scheduleAppender = new ScheduleAppender();
-        ScheduleLog4jAppenderRegister.regist(scheduleAppender);
+        Log4jAppender.regist(scheduleAppender);
 
         new Thread(new Runnable() {
             @Override

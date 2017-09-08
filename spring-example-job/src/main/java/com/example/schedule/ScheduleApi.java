@@ -1,10 +1,13 @@
 package com.example.schedule;
 
+import com.example.schedule.model.ScheduleQueryParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/schedule")
@@ -47,5 +50,17 @@ public class ScheduleApi {
         }
         scheduleManager.run(params.getJobName());
         return "OK";
+    }
+
+    @PostMapping("/list")
+    public List<Schedule> list() {
+        List<Schedule> schedules = scheduleManager.list();
+        return schedules;
+    }
+
+    @PostMapping("/listLog")
+    public List<ScheduleLog> listLog(@RequestBody ScheduleQueryParams params) {
+        List<ScheduleLog> scheduleLogs = scheduleManager.listLog(params.getJobName());
+        return scheduleLogs;
     }
 }

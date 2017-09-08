@@ -476,6 +476,20 @@ public class QuartzManager {
     }
 
     /**
+     * 获取正在运行的Job
+     *
+     * @return
+     */
+    public List<JobExecutionContext> listExecution() {
+        try {
+            return scheduler.getCurrentlyExecutingJobs();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    /**
      * 获取触发器
      *
      * @param jobName  任务名

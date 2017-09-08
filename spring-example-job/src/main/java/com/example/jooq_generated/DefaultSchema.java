@@ -5,6 +5,7 @@ package com.example.jooq_generated;
 
 
 import com.example.jooq_generated.tables.Job;
+import com.example.jooq_generated.tables.JobHistory;
 import com.example.jooq_generated.tables.JobParam;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 939728557;
+    private static final long serialVersionUID = 828504224;
 
     /**
      * The reference instance of <code></code>
@@ -42,6 +43,11 @@ public class DefaultSchema extends SchemaImpl {
      * 定时任务
      */
     public final Job JOB = com.example.jooq_generated.tables.Job.JOB;
+
+    /**
+     * 任务执行记录
+     */
+    public final JobHistory JOB_HISTORY = com.example.jooq_generated.tables.JobHistory.JOB_HISTORY;
 
     /**
      * 定时任务参数
@@ -74,6 +80,7 @@ public class DefaultSchema extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Job.JOB,
+            JobHistory.JOB_HISTORY,
             JobParam.JOB_PARAM);
     }
 }

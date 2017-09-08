@@ -5,6 +5,7 @@ package com.example.jooq_generated;
 
 
 import com.example.jooq_generated.tables.Job;
+import com.example.jooq_generated.tables.JobHistory;
 import com.example.jooq_generated.tables.JobParam;
 
 import javax.annotation.Generated;
@@ -27,6 +28,11 @@ public class Tables {
      * 定时任务
      */
     public static final Job JOB = com.example.jooq_generated.tables.Job.JOB;
+
+    /**
+     * 任务执行记录
+     */
+    public static final JobHistory JOB_HISTORY = com.example.jooq_generated.tables.JobHistory.JOB_HISTORY;
 
     /**
      * 定时任务参数

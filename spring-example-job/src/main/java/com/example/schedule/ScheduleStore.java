@@ -1,11 +1,14 @@
 package com.example.schedule;
 
 import com.example.jooq_generated.tables.Job;
+import com.example.jooq_generated.tables.JobHistory;
 import com.example.jooq_generated.tables.JobParam;
+import com.example.jooq_generated.tables.records.JobHistoryRecord;
 import com.example.jooq_generated.tables.records.JobParamRecord;
 import com.example.jooq_generated.tables.records.JobRecord;
 import org.jooq.DSLContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +20,7 @@ public class ScheduleStore {
         this.dsl = dsl;
     }
 
-    public List<Schedule> listSchedule() {
+    public List<Schedule> list() {
         Job JOB = Job.JOB;
         JobParam JOB_PARAM = JobParam.JOB_PARAM;
 
@@ -55,7 +58,7 @@ public class ScheduleStore {
                 }).collect(Collectors.toList());
     }
 
-    public Schedule getSchedule(String jobName) {
+    public Schedule get(String jobName) {
         Job JOB = Job.JOB;
         JobParam JOB_PARAM = JobParam.JOB_PARAM;
 
@@ -90,5 +93,43 @@ public class ScheduleStore {
         schedule.setJarPath(job.getJarPath());
         schedule.setIsEnable(job.getIsEnable());
         return schedule;
+    }
+
+    public void addLog(String jobName, String jobLog) {
+        JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
+
+        dsl.insertInto(JOB_HISTORY)
+                .columns(JOB_HISTORY.JOB_NAME, JOB_HISTORY.JOB_LOG)
+                .values(jobName, jobLog)
+                .execute();
+    }
+
+    public List<ScheduleLog> listLog(String jobName) {
+        JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
+
+        List<JobHistoryRecord> jobHistories = new ArrayList<>();
+
+        if (jobName != null && jobName.trim().length() > 0) {
+            jobHistories = dsl.select(JOB_HISTORY.JOB_NAME, JOB_HISTORY.JOB_LOG, JOB_HISTORY.CREATE_DATE)
+                    .from(JOB_HISTORY)
+                    .where(JOB_HISTORY.JOB_NAME.eq(jobName))
+                    .orderBy(JOB_HISTORY.CREATE_DATE.desc())
+                    .limit(10)
+                    .fetchInto(JOB_HISTORY);
+        } else {
+            jobHistories = dsl.select(JOB_HISTORY.JOB_NAME, JOB_HISTORY.JOB_LOG, JOB_HISTORY.CREATE_DATE)
+                    .from(JOB_HISTORY)
+                    .orderBy(JOB_HISTORY.CREATE_DATE.desc())
+                    .limit(10)
+                    .fetchInto(JOB_HISTORY);
+        }
+
+        return jobHistories.stream().map(jobHistory -> {
+            ScheduleLog scheduleLog = new ScheduleLog();
+            scheduleLog.setJobName(jobHistory.getJobName());
+            scheduleLog.setJobLog(jobHistory.getJobLog());
+            scheduleLog.setCreateDate(jobHistory.getCreateDate());
+            return scheduleLog;
+        }).collect(Collectors.toList());
     }
 }

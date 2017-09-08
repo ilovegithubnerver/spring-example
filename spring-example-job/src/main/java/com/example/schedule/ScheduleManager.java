@@ -2,6 +2,8 @@ package com.example.schedule;
 
 import com.example.quartz.QuartzManager;
 import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ public class ScheduleManager {
     }
 
     public void init() {
-        List<Schedule> schedules = scheduleStore.listSchedule();
+        List<Schedule> schedules = scheduleStore.list();
         for (Schedule schedule : schedules) {
             start(schedule);
         }
@@ -29,23 +31,45 @@ public class ScheduleManager {
     }
 
     public void start(String jobName) {
-        Schedule schedule = scheduleStore.getSchedule(jobName);
+        Schedule schedule = scheduleStore.get(jobName);
         start(schedule);
     }
 
     public void stop(String jobName) {
-        Schedule schedule = scheduleStore.getSchedule(jobName);
+        Schedule schedule = scheduleStore.get(jobName);
         stop(schedule);
     }
 
     public void restart(String jobName) {
-        Schedule schedule = scheduleStore.getSchedule(jobName);
+        Schedule schedule = scheduleStore.get(jobName);
         restart(schedule);
     }
 
     public void run(String jobName) {
-        Schedule schedule = scheduleStore.getSchedule(jobName);
+        Schedule schedule = scheduleStore.get(jobName);
         run(schedule);
+    }
+
+    public List<Schedule> list() {
+        List<Schedule> schedules = scheduleStore.list();
+
+        List<JobExecutionContext> executions = quartzManager.listExecution();
+        for (JobExecutionContext execution : executions) {
+            JobDetail job = execution.getJobDetail();
+            Schedule schedule = schedules.stream()
+                    .filter(s -> s.getJobName().equals(job.getKey().getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (schedule != null) {
+                schedule.setIsRunning("1");
+                schedule.setNextFireTime(execution.getNextFireTime());
+            }
+        }
+        return schedules;
+    }
+
+    public List<ScheduleLog> listLog(String jobName) {
+        return scheduleStore.listLog(jobName);
     }
 
     public void start(Schedule schedule) {
@@ -86,7 +110,7 @@ public class ScheduleManager {
             quartzManager.removeJob(schedule.getJobName(), jobGroup);
         }
         quartzManager.addJob(schedule.getJobName(), jobGroup, jobClass, jobData);
-        quartzManager.triggerJob(schedule.getJobName(), schedule.getJobGroup());
+        quartzManager.triggerJob(schedule.getJobName(), jobGroup);
     }
 
     private Map<String, Object> getJobData(List<Schedule.Param> jobParams) {

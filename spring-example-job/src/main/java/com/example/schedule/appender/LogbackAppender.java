@@ -1,4 +1,4 @@
-package com.example.schedule;
+package com.example.schedule.appender;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -8,22 +8,23 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.ConsoleAppender;
+import com.example.schedule.ScheduleAppender;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class ScheduleLogbackAppenderRegister extends AppenderBase<ILoggingEvent> {
+public class LogbackAppender extends AppenderBase<ILoggingEvent> {
 
     private boolean inited = false;
     private ScheduleAppender scheduleAppender;
     private PatternLayout layout;
 
     public static void regist(ScheduleAppender scheduleAppender) {
-        new ScheduleLogbackAppenderRegister(scheduleAppender);
+        new LogbackAppender(scheduleAppender);
     }
 
-    private ScheduleLogbackAppenderRegister(ScheduleAppender scheduleAppender) {
+    private LogbackAppender(ScheduleAppender scheduleAppender) {
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         if (loggerFactory == null || !(loggerFactory instanceof LoggerContext))
             return;

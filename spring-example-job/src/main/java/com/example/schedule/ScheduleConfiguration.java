@@ -1,6 +1,8 @@
 package com.example.schedule;
 
 import com.example.quartz.QuartzManager;
+import com.example.schedule.appender.Log4jAppender;
+import com.example.schedule.appender.LogbackAppender;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
 
@@ -19,15 +21,16 @@ public class ScheduleConfiguration {
     @Bean
     public ScheduleAppender scheduleAppender() {
         ScheduleAppender scheduleAppender = new ScheduleAppender();
-        ScheduleLog4jAppenderRegister.regist(scheduleAppender);
-        ScheduleLogbackAppenderRegister.regist(scheduleAppender);
+        Log4jAppender.regist(scheduleAppender);
+        LogbackAppender.regist(scheduleAppender);
         return scheduleAppender;
     }
 
     @Bean
-    public ScheduleListener scheduleListener(ScheduleAppender scheduleAppender) {
+    public ScheduleListener scheduleListener(ScheduleAppender scheduleAppender, ScheduleStore scheduleStore) {
         ScheduleListener scheduleListener = new ScheduleListener();
         scheduleListener.setScheduleAppender(scheduleAppender);
+        scheduleListener.setScheduleStore(scheduleStore);
         return scheduleListener;
     }
 

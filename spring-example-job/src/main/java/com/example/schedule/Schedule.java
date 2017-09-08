@@ -1,5 +1,6 @@
 package com.example.schedule;
 
+import java.util.Date;
 import java.util.List;
 
 public class Schedule {
@@ -17,6 +18,8 @@ public class Schedule {
     private Integer triggerRepeat;// 触发器重复执行次数
     private String jarPath;// JAR包文件名，包括目录
     private String isEnable;// 0 禁用 1 启动
+    private String isRunning = "0";// 是否正在运行 0 不是 1 是
+    private Date NextFireTime;// 下次运行时间
 
     public String getJobName() {
         return jobName;
@@ -96,6 +99,22 @@ public class Schedule {
 
     public void setIsEnable(String isEnable) {
         this.isEnable = isEnable;
+    }
+
+    public String getIsRunning() {
+        return isRunning;
+    }
+
+    public void setIsRunning(String isRunning) {
+        this.isRunning = isRunning;
+    }
+
+    public Date getNextFireTime() {
+        return NextFireTime;
+    }
+
+    public void setNextFireTime(Date nextFireTime) {
+        NextFireTime = nextFireTime;
     }
 
     public static class Param {
