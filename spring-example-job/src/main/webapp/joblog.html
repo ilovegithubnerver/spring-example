@@ -18,25 +18,28 @@
 <!-- 头部固定区域 -->
 <ul class="layui-nav">
     <li class="layui-nav-item"><a href="job.html">任务</a></li>
-    <li class="layui-nav-item"><a href="joblog.html">任务日志</a></li>
+    <li class="layui-nav-item layui-this"><a href="joblog.html">任务日志</a></li>
+    <li class="layui-nav-item"><a href="contact.html">通讯录</a></li>
 </ul>
 <!-- 头部固定区域 -->
 
 
 <!-- 内容主体区域 -->
 <div class="layui-fluid" style="padding-top:15px">
+
     <div class="layui-form" style="width:200px">
         <select id="job-name" lay-filter="job-name">
             <option value="">任务</option>
         </select>
     </div>
+
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
         <thead>
         <tr>
-            <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
-            <th lay-data="{field:'jobName', width:200}">任务名</th>
-            <th lay-data="{field:'createDateText', width:200}">时间</th>
-            <th lay-data="{field:'jobLog', width:800}">日志</th>
+            <th lay-data="{toolbar:'#tpl_list_tool', width:70, align:'center'}">操作</th>
+            <th lay-data="{field:'jobName', width:100}">任务名</th>
+            <th lay-data="{field:'createDateText', width:165}">时间</th>
+            <th lay-data="{field:'jobLog', width:900}">日志</th>
         </tr>
         </thead>
     </table>
@@ -44,7 +47,8 @@
 <!-- 内容主体区域 -->
 
 
-<script type="text/html" id="tool">
+<!-- 内容模板区域 -->
+<script type="text/html" id="tpl_list_tool">
     <a class="layui-btn layui-btn-mini" lay-event="look">查看</a>
 </script>
 
@@ -58,14 +62,15 @@
 <script type="text/html" id="tpl_look">
     <pre class="layui-code">{{ d.jobLog }}</pre>
 </script>
+<!-- 内容模板区域 -->
 
 
 <script type="text/javascript">
     layui.use(['laytpl', 'form', 'table'], function () {
-        var $ = layui.jquery;
         var laytpl = layui.laytpl;
         var form = layui.form;
         var table = layui.table;
+        var http = layui.http;
 
         loadJobName();
         loadData();
@@ -75,8 +80,8 @@
         });
 
         table.on('tool(list)', function (e) {
+            var d = e.data;
             if (e.event === 'look') {
-                var d = e.data;
                 laytpl(tpl_look.innerHTML).render(d, function (html) {
                     layer.open({
                         type: 1,
@@ -89,8 +94,8 @@
         });
 
         function loadJobName() {
-            $.post2('schedule/listName', {}, function (data) {
-                laytpl(tpl_job_name.innerHTML).render(data, function (html) {
+            http.post('schedule/listName', function (res) {
+                laytpl(tpl_job_name.innerHTML).render(res, function (html) {
                     document.getElementById('job-name').innerHTML = html;
                     form.render('select');
                 });
@@ -98,9 +103,9 @@
         }
 
         function loadData(jobName) {
-            $.post2('schedule/listLog', {jobName: jobName}, function (data) {
+            http.post('schedule/listLog', {jobName: jobName}, function (res) {
                 table.reload('list', {
-                    data: dataConverter(data)
+                    data: dataConverter(res)
                 });
             });
         }
@@ -116,6 +121,7 @@
         }
     });
 </script>
+
 </body>
 
 </html>
