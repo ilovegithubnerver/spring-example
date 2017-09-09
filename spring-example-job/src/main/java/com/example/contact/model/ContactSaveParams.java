@@ -1,16 +1,9 @@
 package com.example.contact.model;
 
-import javax.validation.constraints.NotNull;
-
-/**
- * Created by liweitang on 2017/9/9.
- */
 public class ContactSaveParams {
 
-    @NotNull(message = "名称不能为空")
     private String name;
     private String phone;
-    @NotNull(message = "邮箱不能为空")
     private String email;
     private String grouping;
     private String isEnable;

@@ -61,9 +61,10 @@
 
 
 <script type="text/javascript">
-    layui.use(['table'], function () {
+    layui.use(['table', 'http'], function () {
         var $ = layui.jquery;
         var table = layui.table;
+        var http = layui.http;
 
         loadData();
 
@@ -102,7 +103,7 @@
         });
 
         function loadData() {
-            $.post2('schedule/list', {}, function (data) {
+            http.post('schedule/list', {}, function (data) {
                 table.reload('list', {
                     data: dataConverter(data)
                 });

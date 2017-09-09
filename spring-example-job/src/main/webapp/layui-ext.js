@@ -33,9 +33,22 @@ layui.use('jquery', function () {
 
     $.extend({
         post2: function(uri, params, callback) {
-            params = params || function() {};
-            callback = callback || params;
-            $.post(uri, JSON.stringify(params), callback, 'json');
+            var _params = callback ? params : {};
+            var _callback = callback ? callback : params;
+            $.post(uri, JSON.stringify(_params), _callback, 'json');
         }
     });
+});
+
+
+layui.define('jquery', function(exports){
+    var http = {};
+
+    http.post = function (uri, params, callback) {
+        var _params = callback ? params : {};
+        var _callback = callback ? callback : params;
+        $.post(uri, JSON.stringify(_params), _callback, 'json');
+    };
+
+    exports('http', http);
 });
