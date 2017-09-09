@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="layui/css/layui.css">
     <script type="text/javascript" src="layui/layui.js"></script>
-    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="layui-ext.js"></script>
 </head>
 
 <body>
@@ -28,7 +28,7 @@
 <div class="layui-fluid" style="padding-top:15px">
 
     <div class="layui-btn-group">
-        <button class="layui-btn" onclick="addContact()">添加</button>
+        <button class="layui-btn" id="add">添加</button>
     </div>
 
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
@@ -36,21 +36,24 @@
         <tr>
             <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
             <th lay-data="{field:'isEnableText', width:60}">启用</th>
-            <th lay-data="{field:'name', width:200}">名称</th>
-            <th lay-data="{field:'phone', width:200}">电话</th>
-            <th lay-data="{field:'email', width:200}">邮箱</th>
-            <th lay-data="{field:'grouping', width:200}">分组</th>
+            <th lay-data="{field:'name', width:100}">名称</th>
+            <th lay-data="{field:'phone', width:120}">电话</th>
+            <th lay-data="{field:'email', width:220}">邮箱</th>
+            <th lay-data="{field:'grouping', width:120}">分组</th>
         </tr>
         </thead>
     </table>
 </div>
 <!-- 内容主体区域 -->
 
+
+<!-- 内容模板区域 -->
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-mini" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-mini" lay-event="update">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
 
-<script type="text/html" id="tpl_detail">
+<script type="text/html" id="tpl_update">
     <form class="layui-form layui-fluid">
         <div class="layui-form-item">
             <label class="layui-form-label">启用</label>
@@ -63,21 +66,21 @@
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input type="text" name="name" value="{{ d.name }}" {{=d.name == undefined ? 'required' : 'disabled' }}
-                required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                <input type="text" name="name" value="{{ d.name }}" {{=d.name.length > 0  ? 'disabled' : '' }}
+                lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">电话</label>
             <div class="layui-input-block">
-                <input type="text" name="phone" value="{{ d.phone }}" lay-verify="required" placeholder="请输入"
+                <input type="text" name="phone" value="{{ d.phone }}" lay-verify="phone" placeholder="请输入"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">邮箱</label>
             <div class="layui-input-block">
-                <input type="text" name="email" value="{{ d.email }}" required lay-verify="required" placeholder="请输入"
+                <input type="text" name="email" value="{{ d.email }}" lay-verify="email" placeholder="请输入"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -96,21 +99,21 @@
         </div>
     </form>
 </script>
+<!-- 内容模板区域 -->
 
 
 <script type="text/javascript">
     layui.use(['laytpl', 'form', 'table'], function () {
-        var $ = layui.jquery;
         var laytpl = layui.laytpl;
         var form = layui.form;
         var table = layui.table;
+        var http = layui.http;
 
         loadData();
 
-        function addContact() {
-            var d = {
-            };
-            laytpl(tpl_detail.innerHTML).render(d, function (html) {
+        document.getElementById('add').onclick = function() {
+            var d = {name: '', phone: '', email: '', grouping: 'DEFAULT'};
+            laytpl(tpl_update.innerHTML).render(d, function (html) {
                 layer.open({
                     type: 1,
                     area: '400px',
@@ -121,21 +124,19 @@
             });
         }
 
-        form.on('submit(submit)', function (data) {
-            $.post2('apis/contact/save', data.field, function (res) {
-                if (res.result == '000') {
-                    layer.closeAll('page');
-                } else {
-                    layer.msg('提交失败');
-                }
+        form.on('submit(submit)', function (e) {
+            http.post('contact/save', e.field, function (res) {
+                layer.msg('操作完成', {time: 1000});
+                loadData();
+                layer.closeAll('page');
             });
             return false;
         });
 
         table.on('tool(list)', function (e) {
-            if (e.event === 'detail') {
-                var d = e.data;
-                laytpl(tpl_detail.innerHTML).render(d, function (html) {
+            var d = e.data;
+            if (e.event === 'update') {
+                laytpl(tpl_update.innerHTML).render(d, function (html) {
                     layer.open({
                         type: 1,
                         area: '400px',
@@ -144,13 +145,20 @@
                     });
                     form.render('radio');
                 });
+            } else if (e.event == 'delete') {
+                layer.confirm('<p>确定删除吗？</p>', function (z) {
+                    http.post('contact/delete', {name: d.name}, function (res) {
+                        loadData();
+                        layer.close(z);
+                    });
+                });
             }
         });
 
         function loadData() {
-            $.post2('apis/contact/list', {}, function (res) {
+            http.post('contact/list', {}, function (res) {
                 table.reload('list', {
-                    data: dataConverter(res.data)
+                    data: dataConverter(res)
                 });
             });
         }
@@ -164,6 +172,7 @@
         }
     });
 </script>
+
 </body>
 
 </html>
