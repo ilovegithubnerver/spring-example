@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>通讯录</title>
+
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+</head>
+
+<body>
+
+<!-- 头部固定区域 -->
+<ul class="layui-nav">
+    <li class="layui-nav-item"><a href="job.html">任务</a></li>
+    <li class="layui-nav-item"><a href="joblog.html">任务日志</a></li>
+    <li class="layui-nav-item layui-this"><a href="contact.html">通讯录</a></li>
+</ul>
+<!-- 头部固定区域 -->
+
+
+<!-- 内容主体区域 -->
+<div class="layui-fluid" style="padding-top:15px">
+
+    <div class="layui-btn-group">
+        <button class="layui-btn" onclick="addContact()">添加</button>
+    </div>
+
+    <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
+        <thead>
+        <tr>
+            <th lay-data="{toolbar:'#tool', width:120, align:'center'}">操作</th>
+            <th lay-data="{field:'isEnableText', width:60}">启用</th>
+            <th lay-data="{field:'name', width:200}">名称</th>
+            <th lay-data="{field:'phone', width:200}">电话</th>
+            <th lay-data="{field:'email', width:200}">邮箱</th>
+            <th lay-data="{field:'grouping', width:200}">分组</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<!-- 内容主体区域 -->
+
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-mini" lay-event="detail">详情</a>
+</script>
+
+<script type="text/html" id="tpl_detail">
+    <form class="layui-form layui-fluid">
+        <div class="layui-form-item">
+            <label class="layui-form-label">启用</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isEnable" value="1" title="是" {{=d.isEnable == '1' || !d.isEnable ? 'checked'
+                : '' }}>
+                <input type="radio" name="isEnable" value="0" title="否" {{=d.isEnable == '0' ? 'checked' : '' }}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="{{ d.name }}" {{=d.name == undefined ? 'required' : 'disabled' }}
+                required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" value="{{ d.phone }}" lay-verify="required" placeholder="请输入"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" value="{{ d.email }}" required lay-verify="required" placeholder="请输入"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分组</label>
+            <div class="layui-input-block">
+                <input type="text" name="grouping" value="{{ d.grouping }}" lay-verify="required" placeholder="请输入"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="submit" lay-submit>提交</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+
+<script type="text/javascript">
+    layui.use(['laytpl', 'form', 'table'], function () {
+        var $ = layui.jquery;
+        var laytpl = layui.laytpl;
+        var form = layui.form;
+        var table = layui.table;
+
+        loadData();
+
+        function addContact() {
+            var d = {
+            };
+            laytpl(tpl_detail.innerHTML).render(d, function (html) {
+                layer.open({
+                    type: 1,
+                    area: '400px',
+                    title: '添加',
+                    content: html
+                });
+                form.render('radio');
+            });
+        }
+
+        form.on('submit(submit)', function (data) {
+            $.post2('apis/contact/save', data.field, function (res) {
+                if (res.result == '000') {
+                    layer.closeAll('page');
+                } else {
+                    layer.msg('提交失败');
+                }
+            });
+            return false;
+        });
+
+        table.on('tool(list)', function (e) {
+            if (e.event === 'detail') {
+                var d = e.data;
+                laytpl(tpl_detail.innerHTML).render(d, function (html) {
+                    layer.open({
+                        type: 1,
+                        area: '400px',
+                        title: '详情',
+                        content: html
+                    });
+                    form.render('radio');
+                });
+            }
+        });
+
+        function loadData() {
+            $.post2('apis/contact/list', {}, function (res) {
+                table.reload('list', {
+                    data: dataConverter(res.data)
+                });
+            });
+        }
+
+        function dataConverter(data) {
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                d.isEnableText = d.isEnable == '1' ? '是' : '否';
+            }
+            return data;
+        }
+    });
+</script>
+</body>
+
+</html>

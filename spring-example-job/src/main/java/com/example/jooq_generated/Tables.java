@@ -4,6 +4,7 @@
 package com.example.jooq_generated;
 
 
+import com.example.jooq_generated.tables.Contact;
 import com.example.jooq_generated.tables.Job;
 import com.example.jooq_generated.tables.JobHistory;
 import com.example.jooq_generated.tables.JobParam;
@@ -23,6 +24,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 联系人
+     */
+    public static final Contact CONTACT = com.example.jooq_generated.tables.Contact.CONTACT;
 
     /**
      * 定时任务

@@ -4,8 +4,10 @@
 package com.example.jooq_generated;
 
 
+import com.example.jooq_generated.tables.Contact;
 import com.example.jooq_generated.tables.Job;
 import com.example.jooq_generated.tables.JobParam;
+import com.example.jooq_generated.tables.records.ContactRecord;
 import com.example.jooq_generated.tables.records.JobParamRecord;
 import com.example.jooq_generated.tables.records.JobRecord;
 
@@ -38,6 +40,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<ContactRecord> KEY_CONTACT_UNIQUE_NAME_GROUPING = UniqueKeys0.KEY_CONTACT_UNIQUE_NAME_GROUPING;
     public static final UniqueKey<JobRecord> KEY_JOB_PRIMARY = UniqueKeys0.KEY_JOB_PRIMARY;
     public static final UniqueKey<JobParamRecord> KEY_JOB_PARAM_UNIQUE_JOB_NAME_PARAM_KEY = UniqueKeys0.KEY_JOB_PARAM_UNIQUE_JOB_NAME_PARAM_KEY;
 
@@ -51,6 +54,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<ContactRecord> KEY_CONTACT_UNIQUE_NAME_GROUPING = createUniqueKey(Contact.CONTACT, "KEY_contact_UNIQUE_NAME_GROUPING", Contact.CONTACT.NAME, Contact.CONTACT.GROUPING);
         public static final UniqueKey<JobRecord> KEY_JOB_PRIMARY = createUniqueKey(Job.JOB, "KEY_job_PRIMARY", Job.JOB.JOB_NAME);
         public static final UniqueKey<JobParamRecord> KEY_JOB_PARAM_UNIQUE_JOB_NAME_PARAM_KEY = createUniqueKey(JobParam.JOB_PARAM, "KEY_job_param_UNIQUE_JOB_NAME_PARAM_KEY", JobParam.JOB_PARAM.JOB_NAME, JobParam.JOB_PARAM.PARAM_KEY);
     }

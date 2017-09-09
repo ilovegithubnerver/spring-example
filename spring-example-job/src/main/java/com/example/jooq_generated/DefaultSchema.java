@@ -4,6 +4,7 @@
 package com.example.jooq_generated;
 
 
+import com.example.jooq_generated.tables.Contact;
 import com.example.jooq_generated.tables.Job;
 import com.example.jooq_generated.tables.JobHistory;
 import com.example.jooq_generated.tables.JobParam;
@@ -32,12 +33,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 828504224;
+    private static final long serialVersionUID = -114773122;
 
     /**
      * The reference instance of <code></code>
      */
     public static final DefaultSchema DEFAULT_SCHEMA = new DefaultSchema();
+
+    /**
+     * 联系人
+     */
+    public final Contact CONTACT = com.example.jooq_generated.tables.Contact.CONTACT;
 
     /**
      * 定时任务
@@ -79,6 +85,7 @@ public class DefaultSchema extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Contact.CONTACT,
             Job.JOB,
             JobHistory.JOB_HISTORY,
             JobParam.JOB_PARAM);

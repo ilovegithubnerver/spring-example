@@ -17,7 +17,7 @@ public class JooqGenerator {
                 .withGenerator(new Generator()
                         .withDatabase(new Database()
                                 .withName("org.jooq.util.mysql.MySQLDatabase")
-                                .withIncludes("job|job_param|job_history")
+                                .withIncludes("job|job_param|job_history|contact")
                                 .withUnsignedTypes(false)
                                 .withDateAsTimestamp(false)
                                 .withForcedTypes(
