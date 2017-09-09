@@ -1,5 +1,6 @@
 package com.example.schedule;
 
+import com.example.contact.ContactStore;
 import com.example.quartz.QuartzManager;
 import com.example.schedule.appender.Log4jAppender;
 import com.example.schedule.appender.LogbackAppender;
@@ -7,6 +8,11 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.Bean;
 
 public class ScheduleConfiguration {
+
+    @Bean
+    public ContactStore contactStore(DSLContext dsl) {
+        return new ContactStore(dsl);
+    }
 
     @Bean
     public ScheduleStore scheduleStore(DSLContext dsl) {

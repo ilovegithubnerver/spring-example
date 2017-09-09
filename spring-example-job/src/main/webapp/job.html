@@ -11,21 +11,21 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <script type="text/javascript" src="layui/layui.js"></script>
     <script type="text/javascript" src="layui-ext.js"></script>
-
 </head>
 
 <body>
 
 <!-- 头部固定区域 -->
 <ul class="layui-nav">
-    <li class="layui-nav-item"><a href="job.html">任务</a></li>
+    <li class="layui-nav-item layui-this"><a href="job.html">任务</a></li>
     <li class="layui-nav-item"><a href="joblog.html">任务日志</a></li>
+    <li class="layui-nav-item"><a href="contact.html">通讯录</a></li>
 </ul>
 <!-- 头部固定区域 -->
 
 
 <!-- 内容主体区域 -->
-<div class="layui-fluid" style="padding-top:15px">
+<div class="layui-fluid" style="padding-top:15px;">
 
     <div class="layui-btn-group">
         <button class="layui-btn">添加</button>
@@ -34,12 +34,12 @@
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
         <thead>
         <tr>
-            <th lay-data="{toolbar:'#tool', width:200, align:'center'}">操作</th>
+            <th lay-data="{toolbar:'#tpl_list_tool', width:210, align:'center'}">操作</th>
             <th lay-data="{field:'isEnableText', width:60}">启用</th>
             <th lay-data="{field:'job', width:320}">任务</th>
-            <th lay-data="{field:'trigger', width:200}">触发器</th>
+            <th lay-data="{field:'trigger', width:120}">触发器</th>
             <th lay-data="{field:'nextFireTimeText', width:165}">下次运行时间</th>
-            <th lay-data="{field:'jarPath', width:150}">JAR</th>
+            <th lay-data="{field:'jarPath', width:320}">JAR</th>
         </tr>
         </thead>
     </table>
@@ -47,7 +47,8 @@
 <!-- 内容主体区域 -->
 
 
-<script type="text/html" id="tool">
+<!-- 内容模板区域 -->
+<script type="text/html" id="tpl_list_tool">
     <a class="layui-btn layui-btn-mini" lay-event="update">编辑</a>
     {{#  if(d.isRunning == '0' && d.isEnable == '1'){ }}
     <a class="layui-btn layui-btn-mini" lay-event="start">开始</a>
@@ -58,11 +59,11 @@
     <a class="layui-btn layui-btn-mini" lay-event="run">执行</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
+<!-- 内容模板区域 -->
 
 
 <script type="text/javascript">
-    layui.use(['table', 'http'], function () {
-        var $ = layui.jquery;
+    layui.use(['table'], function () {
         var table = layui.table;
         var http = layui.http;
 
@@ -73,39 +74,34 @@
             if (e.event == 'update') {
                 layer.alert('开发中...');
             } else if (e.event == 'start') {
-                $.post2('schedule/start', {jobName: d.jobName}, function (data) {
-                    if (data) {
-                        loadData();
-                    }
+                http.post('schedule/start', {jobName: d.jobName}, function (res) {
+                    layer.msg('操作完成', {time: 1000});
+                    loadData();
                 });
             } else if (e.event == 'stop') {
-                $.post2('schedule/stop', {jobName: d.jobName}, function (data) {
-                    if (data) {
-                        loadData();
-                    }
+                http.post('schedule/stop', {jobName: d.jobName}, function (res) {
+                    layer.msg('操作完成', {time: 1000});
+                    loadData();
                 });
             } else if (e.event == 'run') {
-                $.post2('schedule/run', {jobName: d.jobName}, function (data) {
-                    if (data) {
-                        loadData();
-                    }
+                http.post('schedule/run', {jobName: d.jobName}, function (res) {
+                    layer.msg('操作完成', {time: 1000});
+                    loadData();
                 });
             } else if (e.event == 'delete') {
-                layer.confirm('真的删除行么？', function (index) {
-                    $.post2('schedule/delete', {jobName: d.jobName}, function (data) {
-                        if (data) {
-                            loadData();
-                            layer.close(index);
-                        }
+                layer.confirm('<p>确定删除吗？</p><p style="font-size:10px; color:#FF5722;">此操作会同时删除相应参数，以及运行日志</p>', function (z) {
+                    http.post('schedule/delete', {jobName: d.jobName}, function (res) {
+                        loadData();
+                        layer.close(z);
                     });
                 });
             }
         });
 
         function loadData() {
-            http.post('schedule/list', {}, function (data) {
+            http.post('schedule/list', function (res) {
                 table.reload('list', {
-                    data: dataConverter(data)
+                    data: dataConverter(res)
                 });
             });
         }
@@ -115,9 +111,8 @@
                 var d = data[i];
                 d.job = d.jobName + ' | ' + d.jobGroup + ' | ' + d.jobClassName;
                 if (d.triggerType == 'SIMPLE') {
-                    d.trigger = '间隔 ' + d.triggerInterval + " 重复 " + d.triggerRepeat;
-                }
-                if (d.triggerType == 'CRON') {
+                    d.trigger = d.triggerInterval + " | " + d.triggerRepeat;
+                } else if (d.triggerType == 'CRON') {
                     d.trigger = d.triggerCron;
                 }
                 d.isEnableText = d.isEnable == '1' ? '是' : '否';
@@ -130,6 +125,7 @@
         }
     });
 </script>
+
 </body>
 
 </html>

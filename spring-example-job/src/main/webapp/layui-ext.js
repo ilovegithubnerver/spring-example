@@ -1,3 +1,7 @@
+/*
+ * var date = new Date();
+ * var str = date.format('yyyy-MM-dd HH:mm:ss');
+ */
 Date.prototype.format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份
@@ -16,12 +20,17 @@ Date.prototype.format = function (fmt) {
     return fmt;
 };
 
-layui.use('jquery', function () {
-    var $ = layui.jquery;
 
-    $.ajaxSettings.contentType = 'application/json; charset=UTF-8';
+/*
+ * Http 工具类
+ */
+layui.define('jquery', function (exports) {
+    var jquery = layui.jquery;
+    var http = {};
 
-    $(document).ajaxError(function (event, xhr, options, exc) {
+    jquery.ajaxSettings.contentType = 'application/json; charset=UTF-8';
+
+    jquery(document).ajaxError(function (event, xhr, options, exc) {
         if (xhr.status == 401) {
             console.log(xhr.responseText);
         } else if (xhr.status == 405) {
@@ -31,23 +40,10 @@ layui.use('jquery', function () {
         }
     });
 
-    $.extend({
-        post2: function(uri, params, callback) {
-            var _params = callback ? params : {};
-            var _callback = callback ? callback : params;
-            $.post(uri, JSON.stringify(_params), _callback, 'json');
-        }
-    });
-});
-
-
-layui.define('jquery', function(exports){
-    var http = {};
-
     http.post = function (uri, params, callback) {
         var _params = callback ? params : {};
         var _callback = callback ? callback : params;
-        $.post(uri, JSON.stringify(_params), _callback, 'json');
+        jquery.post(uri, JSON.stringify(_params), _callback, 'json');
     };
 
     exports('http', http);
