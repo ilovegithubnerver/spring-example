@@ -59,11 +59,79 @@
     <a class="layui-btn layui-btn-mini" lay-event="run">执行</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
 </script>
+
+<script type="text/html" id="tpl_update">
+    <form class="layui-form layui-fluid">
+        <div class="layui-form-item">
+            <label class="layui-form-label">启用</label>
+            <div class="layui-input-block">
+                <input type="radio" name="isEnable" value="1" title="是">
+                <input type="radio" name="isEnable" value="0" title="否">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务名</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="jobName" value="{{ d.jobName }}" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务组</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="jobGroup" value="{{ d.jobGroup }}" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类名</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="jobClassName" value="{{ d.jobClassName }}"
+                       lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">触发器类型</label>
+            <div class="layui-input-block">
+                <select class="layui-input" id="trigger-type" lay-filter="trigger-type">
+                    <option value="SIMPLE">SIMPLE</option>
+                    <option value="CRON">CRON</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">执行间隔</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="triggerInterval" value="{{ d.triggerInterval }}"
+                       lay-verify="required" id="trigger-interval">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">重复次数</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="triggerRepeat" value="{{ d.triggerRepeat }}"
+                       lay-verify="required" id="trigger-repeat">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">表达式</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="triggerCron" value="{{ d.triggerCron }}"
+                       lay-verify="required" id="trigger-cron">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-filter="submit" lay-submit>提交</button>
+            </div>
+        </div>
+    </form>
+</script>
 <!-- 内容模板区域 -->
 
 
 <script type="text/javascript">
     layui.use(['laytpl', 'form', 'table'], function () {
+        var $ = layui.jquery;
         var laytpl = layui.laytpl;
         var form = layui.form;
         var table = layui.table;
@@ -71,10 +139,31 @@
 
         loadData();
 
+        form.on('select(trigger-type)', function (e) {
+            renderForm();
+        });
+
+        form.on('submit(submit)', function (e) {
+            http.post('schedule/save', e.field, function (res) {
+                layer.msg('操作完成', {time: 1000});
+                loadData();
+                layer.closeAll('page');
+            });
+            return false;
+        });
+
         table.on('tool(list)', function (e) {
             var d = e.data;
             if (e.event == 'update') {
-                layer.alert('开发中...');
+                laytpl(tpl_update.innerHTML).render(d, function (html) {
+                    layer.open({
+                        type: 1,
+                        area: '400px',
+                        title: '详情',
+                        content: html
+                    });
+                    renderForm();
+                });
             } else if (e.event == 'start') {
                 http.post('schedule/start', {jobName: d.jobName}, function (res) {
                     layer.msg('操作完成', {time: 1000});
@@ -99,6 +188,25 @@
                 });
             }
         });
+
+        function renderForm() {
+            form.render();
+
+            var $triggerType = $('#trigger-type');
+            var $triggerInterval = $('#trigger-interval');
+            var $triggerRepeat = $('#trigger-repeat');
+            var $triggerCron = $('#trigger-cron');
+
+            if ($triggerType.val() == 'SIMPLE') {
+                $triggerInterval.attr('disabled', false).removeClass('layui-disabled');
+                $triggerRepeat.attr('disabled', false).removeClass('layui-disabled');
+                $triggerCron.attr('disabled', true).addClass('layui-disabled');
+            } else if ($triggerType.val() == 'CRON') {
+                $triggerInterval.attr('disabled', true).addClass('layui-disabled');
+                $triggerRepeat.attr('disabled', true).addClass('layui-disabled');
+                $triggerCron.attr('disabled', false).removeClass('layui-disabled');
+            }
+        }
 
         function loadData() {
             http.post('schedule/list', function (res) {
