@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Created by liweitang on 2017/9/9.
- */
 @RestController
 @RequestMapping("/contact")
 public class ContactApi {

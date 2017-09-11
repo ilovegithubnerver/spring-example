@@ -1,6 +1,7 @@
 package com.example.schedule;
 
 import com.example.schedule.model.ScheduleQueryParams;
+import com.example.schedule.model.ScheduleSaveParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +50,15 @@ public class ScheduleApi {
             return false;
         }
         scheduleManager.run(params.getJobName());
+        return true;
+    }
+
+    @PostMapping("/save")
+    public Boolean save(@RequestBody ScheduleSaveParams params) {
+        if (params.getJobName() == null) {
+            return false;
+        }
+        scheduleManager.save(params.getJobName(), params.getJobGroup(), params.getJobClassName(), params.getTriggerType(), params.getTriggerInterval(), params.getTriggerRepeat(), params.getTriggerCron(), params.getIsEnable());
         return true;
     }
 

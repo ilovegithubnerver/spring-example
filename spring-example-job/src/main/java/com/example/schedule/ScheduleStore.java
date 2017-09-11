@@ -20,6 +20,38 @@ public class ScheduleStore {
         this.dsl = dsl;
     }
 
+    public void save(String jobName, String jobGroup, String jobClassName, String triggerType, Long triggerInterval, Integer triggerRepeat, String triggerCron, String isEnable) {
+        Job JOB = Job.JOB;
+
+        dsl.insertInto(JOB)
+                .columns(JOB.JOB_NAME, JOB.JOB_GROUP, JOB.JOB_CLASS_NAME, JOB.TRIGGER_TYPE, JOB.TRIGGER_INTERVAL, JOB.TRIGGER_REPEAT, JOB.TRIGGER_CRON, JOB.IS_ENABLE)
+                .values(jobName, jobGroup, jobClassName, triggerType, triggerInterval != null ? triggerInterval.intValue() : 0, triggerRepeat, triggerCron, isEnable)
+                .onDuplicateKeyUpdate()
+                .set(JOB.JOB_GROUP, jobGroup)
+                .set(JOB.JOB_CLASS_NAME, jobClassName)
+                .set(JOB.TRIGGER_TYPE, triggerType)
+                .set(JOB.TRIGGER_INTERVAL, triggerInterval != null ? triggerInterval.intValue() : 0)
+                .set(JOB.TRIGGER_REPEAT, triggerRepeat)
+                .set(JOB.TRIGGER_CRON, triggerCron)
+                .set(JOB.IS_ENABLE, isEnable)
+                .execute();
+    }
+
+    public void delete(String jobName) {
+        Job JOB = Job.JOB;
+        JobParam JOB_PARAM = JobParam.JOB_PARAM;
+        JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
+
+        dsl.deleteFrom(JOB)
+                .where(JOB.JOB_NAME.eq(jobName))
+                .execute();
+        dsl.deleteFrom(JOB_PARAM)
+                .where(JOB_PARAM.JOB_NAME.eq(jobName));
+        dsl.deleteFrom(JOB_HISTORY)
+                .where(JOB_HISTORY.JOB_NAME.eq(jobName))
+                .execute();
+    }
+
     public List<Schedule> list() {
         Job JOB = Job.JOB;
         JobParam JOB_PARAM = JobParam.JOB_PARAM;
@@ -101,21 +133,6 @@ public class ScheduleStore {
         schedule.setJarPath(job.getJarPath());
         schedule.setIsEnable(job.getIsEnable());
         return schedule;
-    }
-
-    public void delete(String jobName) {
-        Job JOB = Job.JOB;
-        JobParam JOB_PARAM = JobParam.JOB_PARAM;
-        JobHistory JOB_HISTORY = JobHistory.JOB_HISTORY;
-
-        dsl.deleteFrom(JOB)
-                .where(JOB.JOB_NAME.eq(jobName))
-                .execute();
-        dsl.deleteFrom(JOB_PARAM)
-                .where(JOB_PARAM.JOB_NAME.eq(jobName));
-        dsl.deleteFrom(JOB_HISTORY)
-                .where(JOB_HISTORY.JOB_NAME.eq(jobName))
-                .execute();
     }
 
     public void saveLog(String jobName, String jobLog) {

@@ -35,9 +35,30 @@ public class ScheduleManager {
         start(schedule);
     }
 
+    public void start(Schedule schedule) {
+        if (!"1".equals(schedule.getIsEnable()))
+            return;
+
+        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
+        if (jobClass == null)
+            return;
+        Map<String, Object> jobData = getJobData(schedule.getJobParams());
+        jobData.put("jarPath", schedule.getJarPath());
+
+        if (Schedule.TRIGGER_SIMPLE.equals(schedule.getTriggerType())) {
+            quartzManager.addJob(schedule.getJobName(), schedule.getJobGroup(), jobClass, jobData, schedule.getTriggerInterval(), schedule.getTriggerRepeat());
+        } else if (Schedule.TRIGGER_CRON.equals(schedule.getTriggerType())) {
+            quartzManager.addJob(schedule.getJobName(), schedule.getJobGroup(), jobClass, jobData, schedule.getTriggerCron());
+        }
+    }
+
     public void stop(String jobName) {
         Schedule schedule = scheduleStore.get(jobName);
         stop(schedule);
+    }
+
+    public void stop(Schedule schedule) {
+        quartzManager.removeJob(schedule.getJobName(), schedule.getJobGroup());
     }
 
     public void restart(String jobName) {
@@ -45,9 +66,33 @@ public class ScheduleManager {
         restart(schedule);
     }
 
+    public void restart(Schedule schedule) {
+        stop(schedule);
+        start(schedule);
+    }
+
     public void run(String jobName) {
         Schedule schedule = scheduleStore.get(jobName);
         run(schedule);
+    }
+
+    public void run(Schedule schedule) {
+        String jobGroup = "ONCE";
+        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
+        if (jobClass == null)
+            return;
+        Map<String, Object> jobData = getJobData(schedule.getJobParams());
+        jobData.put("jarPath", schedule.getJarPath());
+
+        if (quartzManager.hasJob(schedule.getJobName(), jobGroup)) {
+            quartzManager.removeJob(schedule.getJobName(), jobGroup);
+        }
+        quartzManager.addJob(schedule.getJobName(), jobGroup, jobClass, jobData);
+        quartzManager.triggerJob(schedule.getJobName(), jobGroup);
+    }
+
+    public void save(String jobName, String jobGroup, String jobClassName, String triggerType, Long triggerInterval, Integer triggerRepeat, String triggerCron, String isEnable) {
+        scheduleStore.save(jobName, jobGroup, jobClassName, triggerType, triggerInterval, triggerRepeat, triggerCron, isEnable);
     }
 
     public void delete(String jobName) {
@@ -79,47 +124,6 @@ public class ScheduleManager {
 
     public List<ScheduleLog> listLog(String jobName) {
         return scheduleStore.listLog(jobName);
-    }
-
-    public void start(Schedule schedule) {
-        if (!"1".equals(schedule.getIsEnable()))
-            return;
-
-        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
-        if (jobClass == null)
-            return;
-        Map<String, Object> jobData = getJobData(schedule.getJobParams());
-        jobData.put("jarPath", schedule.getJarPath());
-
-        if (Schedule.TRIGGER_SIMPLE.equals(schedule.getTriggerType())) {
-            quartzManager.addJob(schedule.getJobName(), schedule.getJobGroup(), jobClass, jobData, schedule.getTriggerInterval(), schedule.getTriggerRepeat());
-        } else if (Schedule.TRIGGER_CRON.equals(schedule.getTriggerType())) {
-            quartzManager.addJob(schedule.getJobName(), schedule.getJobGroup(), jobClass, jobData, schedule.getTriggerCron());
-        }
-    }
-
-    public void stop(Schedule schedule) {
-        quartzManager.removeJob(schedule.getJobName(), schedule.getJobGroup());
-    }
-
-    public void restart(Schedule schedule) {
-        stop(schedule);
-        start(schedule);
-    }
-
-    public void run(Schedule schedule) {
-        String jobGroup = "ONCE";
-        Class<? extends Job> jobClass = scheduleLoader.loadClass(schedule.getJobName(), schedule.getJobClassName(), schedule.getJarPath());
-        if (jobClass == null)
-            return;
-        Map<String, Object> jobData = getJobData(schedule.getJobParams());
-        jobData.put("jarPath", schedule.getJarPath());
-
-        if (quartzManager.hasJob(schedule.getJobName(), jobGroup)) {
-            quartzManager.removeJob(schedule.getJobName(), jobGroup);
-        }
-        quartzManager.addJob(schedule.getJobName(), jobGroup, jobClass, jobData);
-        quartzManager.triggerJob(schedule.getJobName(), jobGroup);
     }
 
     private Map<String, Object> getJobData(List<Schedule.Param> jobParams) {

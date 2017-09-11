@@ -28,7 +28,7 @@
 <div class="layui-fluid" style="padding-top:15px;">
 
     <div class="layui-btn-group">
-        <button class="layui-btn">添加</button>
+        <button class="layui-btn" id="add">添加</button>
     </div>
 
     <table class="layui-table" lay-data="{id:'list', data:[]}" lay-filter="list">
@@ -65,8 +65,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">启用</label>
             <div class="layui-input-block">
-                <input type="radio" name="isEnable" value="1" title="是">
-                <input type="radio" name="isEnable" value="0" title="否">
+                <input type="radio" name="isEnable" value="1" title="是" id="is-enable-1">
+                <input type="radio" name="isEnable" value="0" title="否" id="is-enable-0">
             </div>
         </div>
         <div class="layui-form-item">
@@ -91,7 +91,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">触发器类型</label>
             <div class="layui-input-block">
-                <select class="layui-input" id="trigger-type" lay-filter="trigger-type">
+                <select class="layui-input" name="triggerType" id="trigger-type" lay-filter="trigger-type">
                     <option value="SIMPLE">SIMPLE</option>
                     <option value="CRON">CRON</option>
                 </select>
@@ -101,21 +101,21 @@
             <label class="layui-form-label">执行间隔</label>
             <div class="layui-input-block">
                 <input class="layui-input" type="text" name="triggerInterval" value="{{ d.triggerInterval }}"
-                       lay-verify="required" id="trigger-interval">
+                       id="trigger-interval">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">重复次数</label>
             <div class="layui-input-block">
                 <input class="layui-input" type="text" name="triggerRepeat" value="{{ d.triggerRepeat }}"
-                       lay-verify="required" id="trigger-repeat">
+                       id="trigger-repeat">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">表达式</label>
             <div class="layui-input-block">
                 <input class="layui-input" type="text" name="triggerCron" value="{{ d.triggerCron }}"
-                       lay-verify="required" id="trigger-cron">
+                       id="trigger-cron">
             </div>
         </div>
 
@@ -130,7 +130,7 @@
 
 
 <script type="text/javascript">
-    layui.use(['laytpl', 'form', 'table'], function () {
+    layui.use(['jquery', 'laytpl', 'form', 'table'], function () {
         var $ = layui.jquery;
         var laytpl = layui.laytpl;
         var form = layui.form;
@@ -139,8 +139,28 @@
 
         loadData();
 
-        form.on('select(trigger-type)', function (e) {
-            renderForm();
+        $('#add').click(function () {
+            var d = {
+                jobName: '',
+                jobGroup: 'DEFAULT',
+                jobClassName: '',
+                triggerType: 'SIMPLE',
+                triggerCron: '',
+                triggerInterval: 1000,
+                triggerRepeat: 0,
+                isEnable: '0'
+            };
+            laytpl(tpl_update.innerHTML).render(d, function (html) {
+                layer.open({
+                    type: 1,
+                    area: '400px',
+                    title: '添加',
+                    content: html
+                });
+                $('#is-enable-' + d.isEnable).attr("checked", "checked");
+                $('#trigger-type option[value=' + d.triggerType + ']').attr("selected", "selected");
+                form.render();
+            });
         });
 
         form.on('submit(submit)', function (e) {
@@ -162,7 +182,9 @@
                         title: '详情',
                         content: html
                     });
-                    renderForm();
+                    $('#is-enable-' + d.isEnable).attr("checked", "checked");
+                    $('#trigger-type option[value=' + d.triggerType + ']').attr("selected", "selected");
+                    form.render();
                 });
             } else if (e.event == 'start') {
                 http.post('schedule/start', {jobName: d.jobName}, function (res) {
@@ -188,25 +210,6 @@
                 });
             }
         });
-
-        function renderForm() {
-            form.render();
-
-            var $triggerType = $('#trigger-type');
-            var $triggerInterval = $('#trigger-interval');
-            var $triggerRepeat = $('#trigger-repeat');
-            var $triggerCron = $('#trigger-cron');
-
-            if ($triggerType.val() == 'SIMPLE') {
-                $triggerInterval.attr('disabled', false).removeClass('layui-disabled');
-                $triggerRepeat.attr('disabled', false).removeClass('layui-disabled');
-                $triggerCron.attr('disabled', true).addClass('layui-disabled');
-            } else if ($triggerType.val() == 'CRON') {
-                $triggerInterval.attr('disabled', true).addClass('layui-disabled');
-                $triggerRepeat.attr('disabled', true).addClass('layui-disabled');
-                $triggerCron.attr('disabled', false).removeClass('layui-disabled');
-            }
-        }
 
         function loadData() {
             http.post('schedule/list', function (res) {

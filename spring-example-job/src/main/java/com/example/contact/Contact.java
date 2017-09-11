@@ -1,8 +1,5 @@
 package com.example.contact;
 
-/**
- * Created by liweitang on 2017/9/9.
- */
 public class Contact {
 
     private String name;
