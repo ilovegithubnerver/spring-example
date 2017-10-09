@@ -1,14 +1,14 @@
 package com.example.model;
 
-public class Role {
+public class Permission {
 
     private Long id;
     private String name;
 
-    public Role() {
+    public Permission() {
     }
 
-    public Role(Long id, String name) {
+    public Permission(Long id, String name) {
         this.id = id;
         this.name = name;
     }

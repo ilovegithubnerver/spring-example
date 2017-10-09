@@ -13,6 +13,7 @@ public class UserService {
 
     public User getByUsername(String username) {
         User user = new User();
+        user.setId(1L);
         user.setUsername("conanli");
         user.setPassword(passwordEncoder.encode("123456"));
         return user;

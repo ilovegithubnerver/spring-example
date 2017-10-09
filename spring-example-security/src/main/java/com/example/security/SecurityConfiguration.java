@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // auth.inMemoryAuthentication().withUser("conanli").password("123456").roles("USER");
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        // auth.authenticationProvider();
     }
 
     @Bean
