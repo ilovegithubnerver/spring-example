@@ -13,7 +13,7 @@ import javax.jms.TextMessage;
 @EnableJms
 public class HelloListener {
 
-    @JmsListener(destination = "test", containerFactory = "jmsListenerContainerFactory")
+    @JmsListener(destination = "hello", containerFactory = "jmsListenerContainerFactory")
     public void onMessage(Message message) {
         TextMessage tm = (TextMessage) message;
         try {
