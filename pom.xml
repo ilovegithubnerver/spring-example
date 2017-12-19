@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>spring-example-activemq</module>
         <module>spring-example-aop</module>
         <module>spring-example-async</module>
         <module>spring-example-autoload-cache</module>
